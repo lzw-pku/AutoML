@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9cb3d318-9f3c-4b03-9743-afa4411c55ae" name="Default Changelist" comment="" />
+    <list default="true" id="9cb3d318-9f3c-4b03-9743-afa4411c55ae" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/estimator.py" beforeDir="false" afterPath="$PROJECT_DIR$/estimator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note" beforeDir="false" afterPath="$PROJECT_DIR$/note" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seq2seq/beam_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/seq2seq/beam_search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seq2seq/seq2seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/seq2seq/seq2seq.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,10 +117,10 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="555" y="211" width="800" height="688" key="#Scopes/0.27.1920.1053@0.27.1920.1053" timestamp="1582533011935" />
-    <state x="647" y="311" key="FileChooserDialogImpl" timestamp="1582618937291">
+    <state x="647" y="311" key="FileChooserDialogImpl" timestamp="1582631736230">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="647" y="311" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1582618937291" />
+    <state x="647" y="311" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1582631736230" />
     <state x="625" y="162" width="1102" height="741" key="SettingsEditor" timestamp="1582533257237">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>

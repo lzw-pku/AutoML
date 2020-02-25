@@ -7,7 +7,7 @@ import torch
 
 
 class _Hypothesis(object):
-    def __init__(self, sequence, logprob, hists, attns=[]):
+    def __init__(self, sequence, logprob, hists, stack, attns=[]):
         """
         seqence: list of int tokens
         logprob: current log probability
@@ -18,15 +18,17 @@ class _Hypothesis(object):
         self.logprob = logprob
         self.hists = hists
         self.attns = attns  # for unk replacement
-        self.stack = []
+        self.stack = stack
 
-    def extend_k(self, topk, logprobs, hists, attn=None, diverse=1.0):
+    def extend_k(self, topk, logprobs, hists, id2nonterminal, attn=None, diverse=1.0):
         if attn is None:
             attns = []
         else:
             attns = self.attns + [attn]
         return [_Hypothesis(self.sequence+[t.item()],
-                            self.logprob+lp.item()-diverse*i, hists, attns)
+                            self.logprob+lp.item()-diverse*i, hists,
+                            id2nonterminal[t.item()] + self.stack[1:] if int(t) != 0
+                            else [], attns)
                 for i, (t, lp) in enumerate(zip(topk, logprobs))]
 
     def __lt__(self, other):
@@ -36,7 +38,7 @@ class _Hypothesis(object):
 
 def init_beam(start, hists):
     """ get a initial beam to start beam search"""
-    return [_Hypothesis([start], 0, hists)]
+    return [_Hypothesis([start], 0, hists, ['statement'])]
 
 
 def create_beam(tok, lp, hists):
@@ -54,18 +56,19 @@ def pack_beam(hyps, device):
                   for i, d in enumerate([1, 1, 0]))
     token = token.to(device)
     states = ((hists[0], hists[1]), hists[2])
-    return token, states
+    stacks = [h.stack for h in hyps]
+    return token, states, stacks
 
 
-def next_search_beam(beam, beam_size, finished,
-                     end, topk, lp, hists, attn=None, diverse=1.0):
+def next_search_beam(beam, beam_size, finished, id2nonterminal,
+                     topk, lp, hists, attn=None, diverse=1.0):
     """generate the next beam(K-best hyps)"""
     topks, lps, hists_list, attns = _unpack_topk(topk, lp, hists, attn)
     hyps_lists = [h.extend_k(topks[i], lps[i],
-                             hists_list[i], attns[i], diverse)
+                             hists_list[i], id2nonterminal, attns[i], diverse)
                   for i, h in enumerate(beam)]
     hyps = list(concat(hyps_lists))
-    finished, beam = _clean_beam(finished, hyps, end, beam_size)
+    finished, beam = _clean_beam(finished, hyps, beam_size)
 
     return finished, beam
 
@@ -102,25 +105,27 @@ def _unpack_topk(topk, lp, hists, attn=None):
         return topks, lps, k_hists, attns
 
 
-def _clean_beam(finished, beam, end_tok, beam_size, remove_tri=True):
+def _clean_beam(finished, beam, beam_size, remove_tri=True):
     """ remove completed sequence from beam """
     new_beam = []
     for h in sorted(beam, reverse=True,
                     key=lambda h: h.logprob/len(h.sequence)):
         if remove_tri and _has_repeat_tri(h.sequence):
             h.logprob = -1e9
-        if h.sequence[-1] == end_tok:
-            finished_hyp = _Hypothesis(h.sequence[:-1], # remove EOS
-                                       h.logprob, h.hists, h.attns)
+        if len(h.stack) == 0 and h.logprob != float('-inf'):
+            finished_hyp = _Hypothesis(h.sequence,
+                                       h.logprob, h.hists, [], h.attns)
             finished.append(finished_hyp)
-        else:
+        elif len(h.stack) > 0:
             new_beam.append(h)
         if len(new_beam) == beam_size:
             break
     else:
-        # ensure beam size
-        while len(new_beam) < beam_size:
-            new_beam.append(new_beam[0])
+        if len(finished) < beam_size:
+            assert len(new_beam) > 0
+            # ensure beam size
+            while len(new_beam) < beam_size:
+                new_beam.append(new_beam[0])
 
     finished = sorted(finished, reverse=True,
                       key=lambda h: h.logprob/len(h.sequence))
