@@ -6,11 +6,12 @@ import pickle
 
 
 class Batch:
-    def __init__(self, questions, src_lens, actions_in, actions_out):
+    def __init__(self, questions, src_lens, actions_in, actions_out, logical_forms):
         self.questions = questions
         self.src_lens = src_lens
         self.actions_in = actions_in
         self.actions_out = actions_out
+        self.logical_forms = logical_forms
 
 
 class GeoDataset:
@@ -50,7 +51,8 @@ class GeoDataset:
         for i in range(0, leng, self.batch_size):
             batch_questions = self.questions[i: min(i + self.batch_size, leng)]
             batch_actions = actions[i: min(i + self.batch_size, leng)]
-            batches.append(self.padding(batch_questions, batch_actions))
+            batches.append(self.padding(batch_questions, batch_actions,
+                                        self.logical_forms[i: min(i + self.batch_size, leng)]))
         return batches, id2rule, productions
 
     def rank(self, questions, logical_forms):
@@ -58,7 +60,7 @@ class GeoDataset:
         data = list(sorted(data, key=lambda x: len(x[0])))
         return [e[0] for e in data], [e[1] for e in data]
 
-    def padding(self, batch_questions, batch_actions):
+    def padding(self, batch_questions, batch_actions, batch_logical_forms):
         src_lens = [len(question) for question in batch_questions]
         actions_in = [[PAD] + actions for actions in batch_actions]
         actions_out = [actions + [PAD] for actions in batch_actions]
@@ -67,4 +69,4 @@ class GeoDataset:
         actions_in = pad_batch_tensorize(actions_in, PAD, self.cuda)
         actions_out = pad_batch_tensorize(actions_out, PAD, self.cuda)
 
-        return Batch(batch_questions, src_lens, actions_in, actions_out)
+        return Batch(batch_questions, src_lens, actions_in, actions_out, batch_logical_forms)

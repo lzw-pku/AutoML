@@ -113,15 +113,17 @@ class Estimator:
             with open('tmp.pkl', 'wb') as f:
                 pickle.dump((batch_actions, id2rule), f)
             #exit(0)
-            for actions in batch_actions:
+            for actions, logical_form in zip(batch_actions, batch.logical_forms):
                 for i in range(len(actions)):
                     if int(actions[i]) == 0:
                         actions = actions[:i]
-                        print(actions)
+                        #print(actions)
                         break
                 rule_str = [id2rule[int(act)] for act in actions]
                 rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
                 print(rule)
+                print(logical_form)
+                print('*' * 80)
 
     def build_decode_dict(self, productions):
         nonterminal2id = {}
