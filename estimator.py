@@ -103,7 +103,7 @@ class Estimator:
         self.model.eval()
         for batch in batches:
             batch_actions = self.model.batch_decode(batch.questions,
-                                                    batch.src_lens, PAD, 100,
+                                                    batch.src_lens, PAD, 200,
                                                     nonterminal2id, id2nonterminal)[0]
             #id2rule也许可以被production替代
             #print('!!!!')
