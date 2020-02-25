@@ -57,7 +57,9 @@ class GeoDataset:
 
     def rank(self, questions, logical_forms):
         data = list(zip(questions, logical_forms))
-        data = list(sorted(data, key=lambda x: len(x[0])))
+        #data = list(sorted(data, key=lambda x: len(x[0])))
+        import random
+        data = list(sorted(data, key=lambda x: random.random()))
         return [e[0] for e in data], [e[1] for e in data]
 
     def padding(self, batch_questions, batch_actions, batch_logical_forms):

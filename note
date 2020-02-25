@@ -13,3 +13,6 @@ compute_performance默认用的prolog
 
 IRNet中，decoder的init input是0向量. train的时候没有考虑action space。
 tgt_in是0向量以及全部action   tgt_out是全部action
+
+
+不再排序 而是完全打乱顺序
