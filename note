@@ -1,0 +1,15 @@
+使用glove 不训练embedding
+
+有START和END
+
+grammar parse 的action从1开始 并且没有ROOT_RULE，是否ROOT_RULE是0？？？
+
+长度大于1就加（）     ' ' 用 ' ws '代替
+
+
+transform没有考虑 ROOT_RULE!!!
+
+compute_performance默认用的prolog
+
+IRNet中，decoder的init input是0向量. train的时候没有考虑action space。
+tgt_in是0向量以及全部action   tgt_out是全部action
