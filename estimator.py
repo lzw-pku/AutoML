@@ -108,6 +108,7 @@ class Estimator:
             #id2rule也许可以被production替代
             #print('!!!!')
             #print(batch_actions)
+            batch_actions = torch.stack(batch_actions).transpose(0, 1)
             import pickle
             with open('tmp.pkl', 'wb') as f:
                 pickle.dump((batch_actions, id2rule), f)
