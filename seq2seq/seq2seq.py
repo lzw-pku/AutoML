@@ -127,6 +127,8 @@ class Seq2seqModel(nn.Module):
                 tok, states, attention, mask)
             #print(tok[:, 0])
             for id, t in enumerate(tok):
+                if end_flag[id]:
+                    continue
                 nonterminal_stack[id] = id2nonterminal[int(t[0])] + nonterminal_stack[id][1:]
                 if len(nonterminal_stack[id]) == 0:
                     end_flag[id] = True

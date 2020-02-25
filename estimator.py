@@ -68,7 +68,7 @@ class Estimator:
                 save_dict['optim'] = self.optimizer.state_dict()
                 torch.save(save_dict, join(self.path, f'ckpt{i}-{performance}'))
             print(i)
-            if i % 10 == 0:
+            if i % 20 == 19:
                 self.compute_performance(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
 
     def train(self, batches):
