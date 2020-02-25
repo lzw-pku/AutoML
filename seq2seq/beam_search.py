@@ -18,6 +18,7 @@ class _Hypothesis(object):
         self.logprob = logprob
         self.hists = hists
         self.attns = attns  # for unk replacement
+        self.stack = []
 
     def extend_k(self, topk, logprobs, hists, attn=None, diverse=1.0):
         if attn is None:

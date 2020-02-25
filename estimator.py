@@ -108,6 +108,8 @@ class Estimator:
 
     def compute_performance(self, batches, id2rule, nonterminal2id, id2nonterminal):
         self.model.eval()
+        total = 0
+        true_example = 0
         for batch in batches:
             batch_actions = self.model.batch_decode(batch.questions,
                                                     batch.src_lens, PAD, 200,
@@ -116,10 +118,11 @@ class Estimator:
             #print('!!!!')
             #print(batch_actions)
             batch_actions = torch.stack(batch_actions).transpose(0, 1)
-            import pickle
-            with open('tmp.pkl', 'wb') as f:
-                pickle.dump((batch_actions, id2rule), f)
+            #import pickle
+            #with open('tmp.pkl', 'wb') as f:
+            #    pickle.dump((batch_actions, id2rule), f)
             #exit(0)
+            total += len(batch_actions)
             for actions, logical_form in zip(batch_actions, batch.logical_forms):
                 for i in range(len(actions)):
                     if int(actions[i]) == 0:
@@ -131,6 +134,9 @@ class Estimator:
                 print(rule)
                 print(logical_form)
                 print('*' * 80)
+                if rule == logical_form:
+                    true_example += 1
+        print('exact match: ', true_example / total)
 
     def build_decode_dict(self, productions):
         nonterminal2id = {}
