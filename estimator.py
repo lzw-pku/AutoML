@@ -41,8 +41,13 @@ class Estimator:
                                   dropout=self.dropout)
         self.model.set_embedding(torch.tensor(self.dataset.word_vector))
 
+        state_dict = torch.load('exp/ckpt289-0.4418167173862457')
+        self.model.load_state_dict(state_dict['net'])
         if self.cuda:
             self.model.cuda()
+
+        self.compute_performance(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
+        exit(0)
 
         self.optimizer = torch.optim.SGD([p for p in self.model.parameters() if p.requires_grad],
                                          lr=self.lr)
@@ -67,7 +72,6 @@ class Estimator:
                 save_dict['net'] = self.model.state_dict()
                 save_dict['optim'] = self.optimizer.state_dict()
                 torch.save(save_dict, join(self.path, f'ckpt{i}-{performance}'))
-            print(i)
             if i % 20 == 19:
                 self.compute_performance(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
 
@@ -96,7 +100,7 @@ class Estimator:
         return loss / len(batches)
 
     def compute_performance(self, batches, id2rule, nonterminal2id, id2nonterminal):
-        print('???')
+        self.model.eval()
         for batch in batches:
             batch_actions = self.model.batch_decode(batch.questions,
                                                     batch.src_lens, PAD, 100,
