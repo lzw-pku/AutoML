@@ -5,42 +5,24 @@ from transform import Transformer
 
 
 from actor import Actor
-
+from utils import read_prolog_data
 def train(args):
     actor = Actor(args)
     actor.step()
-    #b1 = estimator.dataset.parse(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
-    exit(0)
+    '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
-    #b2 = estimator.dataset.parse(*t.get_grammar_dict())
-
-    #print(t.get_grammar_dict())
-    #t.creat_nt('"("')
-    grammar_dict, _ = t.get_grammar_dict()
-    #print(grammar_dict)
-    #exit(0)
+    t.creat_nt('"_population"')
+    t.merge_nt(['is_area', 'is_captial_of'])
+    t.combine_nt('predicate', 'conjunction')
+    grammar_dict, root_rule = t.get_grammar_dict()
+    from grammars.grammar import Grammar
+    g1 = Grammar(grammar_dict, root_rule)
+    (train_questions, test_questions), \
+    (train_logical_forms, test_logical_forms) = read_prolog_data()
+    logical_forms = train_logical_forms + test_logical_forms
+    for form in logical_forms:
+        g1.parse(form)
     '''
-    for k, v in prolog_grammar.GRAMMAR_DICTIONARY.items():
-        v1 = grammar_dict[k]
-        for s in v:
-            if s not in v1:
-                print(k)
-                print(v)
-                print(v1)
-                #continue
-        
-        for s in v1:
-            if s not in v:
-                print(k)
-                print(v)
-                print(v1)
-                #exit(0)
-    '''
-    #for key, value in grammar_dict.items():
-    #    print(key, value)
-    #estimator.estimate(prolog_grammar)
-    #Actor = pass
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='training of the AutoML'
@@ -63,7 +45,7 @@ if __name__ == '__main__':
     #parser.add_argument('--max_action_len', type=int, action='store', default=30,
     #                    help='maximun actions in an output action sequence')
     # training options
-    parser.add_argument('--lr', type=float, action='store', default=1e-1,
+    parser.add_argument('--lr', type=float, action='store', default=1e-3,
                         help='learning rate')
     parser.add_argument('--dropout', type=float, action='store', default=0,
                         help='dropout')

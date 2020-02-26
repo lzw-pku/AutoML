@@ -16,7 +16,9 @@ class Actor:
 
 
     def step(self):
-
+        self.transformer.creat_nt('"_population"')
+        self.transformer.merge_nt(['is_area', 'is_captial_of'])
+        self.transformer.combine_nt('predicate', 'conjunction')
+        grammar_dict, root_rule = self.transformer.get_grammar_dict()
         #self.estimator.estimate(*self.transformer.get_grammar_dict())
-        self.estimator.estimate(prolog_grammar.GRAMMAR_DICTIONARY,
-                                prolog_grammar.ROOT_RULE)
+        self.estimator.estimate(grammar_dict, root_rule)

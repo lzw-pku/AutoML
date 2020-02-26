@@ -17,7 +17,6 @@ class Grammar:
 
         # Non terminals
         self._non_terminals = sorted(list(self._grammar_dictionary.keys()))
-
         _grammar = _Grammar(format_grammar_string(self._grammar_dictionary))
         self._grammar = _grammar
         valid_actions = initialize_valid_actions(_grammar)
@@ -34,7 +33,6 @@ class Grammar:
         self._id2rule = dict()
         rule_id = 1
         for production_rule_str in production_rule_strs:
-            #print(production_rule_str)
             nonterminal, rhs = production_rule_str.split(' -> ')
             production_rule_str = ' '.join(production_rule_str.split(' '))
             assert nonterminal in self._non_terminals
@@ -68,9 +66,6 @@ class Grammar:
         return len(self._non_terminals)
 
     def parse(self, query: str):
-        #print(query)
-        #print(self._grammar)
-        #exit(0)
         sql_visitor = SqlVisitor(self._grammar)
         q = query.lower().replace("``", "'").replace("''", "'")
         try:

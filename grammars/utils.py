@@ -38,7 +38,6 @@ def initialize_valid_actions(grammar: Grammar,
 
     for key in grammar:
         rhs = grammar[key]
-
         # Sequence represents a series of expressions that match pieces of the text in order.
         # Eg. A -> B C
         if isinstance(rhs, Sequence):
@@ -56,7 +55,7 @@ def initialize_valid_actions(grammar: Grammar,
         # A string literal, eg. "A"
         elif isinstance(rhs, Literal):
             if rhs.literal != "":
-                valid_actions[key].add(format_action(key, repr(rhs.literal),
+                valid_actions[key].add(format_action(key, '\"' + rhs.literal + '\"', #repr(rhs.literal),
                                                      keywords_to_uppercase=keywords_to_uppercase))
             else:
                 valid_actions[key] = set()

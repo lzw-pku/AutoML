@@ -4,10 +4,6 @@
 
 grammar parse 的action从1开始 并且没有ROOT_RULE，是否ROOT_RULE是0？？？
 
-长度大于1就加（）     ' ' 用 ' ws '代替
-
-
-transform没有考虑 ROOT_RULE!!!
 
 compute_performance默认用的prolog
 
@@ -19,3 +15,10 @@ tgt_in是0向量以及全部action   tgt_out是全部action
 
 S 是 statement，在batch_decode和beam_search中都用了
 beam_search的时候不能出现3次重复
+
+
+
+grammar:
+    transform没有考虑 ROOT_RULE!!!
+    S->A A->B 会把A删掉
+    ‘’ 和 “” 有问题，在OneOf和Literal处理时repr会把"a"  变成"'a'" 从而导致key error

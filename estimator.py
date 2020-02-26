@@ -48,7 +48,7 @@ class Estimator:
             self.model.cuda()
 
         self.optimizer = torch.optim.SGD([p for p in self.model.parameters() if p.requires_grad],
-                                         lr=self.lr)
+                                         lr=self.lr, weight_decay=1e-4)
         self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', verbose=True,
                                            factor=self.decay, min_lr=0,
                                            patience=self.lr_p)
@@ -70,7 +70,7 @@ class Estimator:
                 save_dict['metric'] = performance
                 save_dict['net'] = self.model.state_dict()
                 save_dict['optim'] = self.optimizer.state_dict()
-                torch.save(save_dict, join(self.path, f'ckpt{i}-{performance}'))
+                torch.save(save_dict, join(self.path, f'model'))
                 patience = 10
             else:
                 patience -= 1

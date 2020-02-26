@@ -1,5 +1,8 @@
 import copy
 from grammars.grammar import Grammar
+import re
+
+
 class Transformer:
     def __init__(self, grammar_dict, root_rule):
         grammar = Grammar(grammar_dict, root_rule)
@@ -20,40 +23,106 @@ class Transformer:
         self.productions = productions
         #    print(production.rhs.lstrip('[').rstrip(']').split())
         self.nonterminal_num = 0
+
     def creat_nt(self, terminal): # 必须是“ ” 包裹！！！
-        new_t = 'NEW_TERMINAL' + str(self.nonterminal_num)
+        assert terminal.startswith('"') and terminal.endswith('"')
+        new_t = 'new_terminal' + str(self.nonterminal_num)
         self.nonterminal_num += 1
         self.non_terminals.add(new_t)
         for production in self.productions:
             production[1] = list(map(lambda x: new_t if x == terminal else x, production[1]))
-        self.productions.append((new_t, [terminal]))
-        return self.get_grammar_dict()
+        self.productions.append([new_t, [terminal]])
 
-    def merge_nt(self, nontermnal_list):
-        new_t = 'NEW_TERMINAL' + str(self.nonterminal_num)
+        for k in self._grammar_dictionary.keys():
+            self._grammar_dictionary[k] = list(map(lambda s: s.replace(terminal, f' {new_t} '),
+                                                   self._grammar_dictionary[k]))
+        self._grammar_dictionary[new_t] = [terminal]
+
+    def merge_nt(self, nonterminal_list):
+        assert self.check_merge(nonterminal_list)
+        new_t = 'new_terminal' + str(self.nonterminal_num)
+        self.nonterminal_num += 1
+        self.non_terminals.add(new_t)
+        for production in self.productions:
+            production[1] = list(map(lambda x: new_t if x in nonterminal_list else x, production[1]))
+        self.productions.append([new_t, nonterminal_list])
+
+        def replace(s):
+            for nonterminal in nonterminal_list:
+                s = s.replace(nonterminal, new_t)
+            return s
+
+        for k in self._grammar_dictionary.keys():
+            self._grammar_dictionary[k] = list(map(replace, self._grammar_dictionary[k]))
+            #print(k, self._grammar_dictionary[k])
+        self._grammar_dictionary[new_t] = nonterminal_list
+
+    def combine_nt(self, nt1, nt2):
+        assert self.check_combine(nt1, nt2)
+        new_t = 'new_terminal' + str(self.nonterminal_num)
         self.nonterminal_num += 1
         self.non_terminals.add(new_t)
 
-    def get_grammar_dict(self):
-        grammar_dict = {}
         for production in self.productions:
-            key, rhs = production
-            tmp = ' ws '.join(rhs)
-            '''
-            for s in rhs:
-                if s in self.non_terminals:
-                    tmp = '(' + tmp + ')'
+            flag = True
+            while flag:
+                flag = False
+                for i in range(len(production[1]) - 1):
+                    if production[1][i] == nt1 and production[1][i + 1] == nt2:
+                        flag = True
+                        break
+                if flag:
+                    production[1] = production[1][:i] + [new_t] + production[1][i+2:]
+        self.productions.append([new_t, [nt1, nt2]])
+
+
+        for k in self._grammar_dictionary.keys():
+            self._grammar_dictionary[k] = list(map(lambda x: re.sub(nt1 + ' +ws +' + nt2, new_t, x),
+                                                   self._grammar_dictionary[k]))
+        self._grammar_dictionary[new_t] = [f'({nt1} ws {nt2})']
+
+
+    def delete_prod(self, prod_id):
+        pass
+        k, v = self.productions[prod_id]
+        #for
+        self.productions[prod_id] = None
+
+
+    def get_grammar_dict(self):
+        return self._grammar_dictionary, self.root_rule
+
+    def check_merge(self, nonterminal_list):
+        assert len(nonterminal_list) > 1 and all([x in self.non_terminals for x in nonterminal_list])
+        for k, v in self._grammar_dictionary.items():
+            for x in v:
+                for nonterminal in nonterminal_list:
+                    if nonterminal in x:
+                        for nonterminal1 in nonterminal_list:
+                            for x1 in v:
+                                if nonterminal1 in x1 and x1.replace(nonterminal1, nonterminal) == x:
+                                    break
+                            else:
+                                print(nonterminal, k, v, x)
+                                return False
+                        break
+        return True
+
+    def check_combine(self, nt1, nt2):
+        prod_flag = False
+        for _, v in self.productions:
+            for i in range(len(v) - 1):
+                if v[i] == nt1 and v[i + 1] == nt2:
+                    prod_flag = True
                     break
-            '''
-            #if rhs[0] not in self.terminals:
-            #    tmp = '(' + tmp + ')'
-            if len(rhs) > 1:
-                tmp = f'({tmp})'
-            if key not in grammar_dict:
-                grammar_dict[key] = [tmp]
-            else:
-                grammar_dict[key].append(tmp)
-        grammar_dict["ws"] = ['~"\s*"i']
-        return (grammar_dict, self.root_rule)
-#from grammars.geo import prolog_grammar
-#t = Transformer(prolog_grammar)
+            if prod_flag:
+                break
+        grammar_flag = False
+        for _, vs in self._grammar_dictionary.items():
+            for v in vs:
+                if re.search(nt1 + ' +ws +' + nt2, v) is not None:
+                    grammar_flag = True
+                    break
+            if grammar_flag:
+                break
+        return prod_flag and grammar_flag
