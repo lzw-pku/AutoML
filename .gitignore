@@ -1,3 +1,5 @@
+.idea
+nohup*
 tmp.pkl
 *.pyc
 exp
