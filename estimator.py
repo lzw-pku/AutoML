@@ -78,7 +78,8 @@ class Estimator:
                     self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
                     print('early stop')
                     exit(0)
-            if i % 20 == 19:
+            if i % 50 == 49:
+                self.compute_performance(test_batches, id2rule, nonterminal2id, id2nonterminal)
                 self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
 
     def train(self, batches):
@@ -111,7 +112,7 @@ class Estimator:
         true_example = 0
         for batch in batches:
             batch_actions = self.model.batched_beamsearch(batch.questions,
-                                                    batch.src_lens, PAD, 200, 5,
+                                                    batch.src_lens, PAD, 200, 3,
                                                     nonterminal2id, id2nonterminal)[0]
             #id2rule也许可以被production替代
             batch_actions = torch.stack(batch_actions).transpose(0, 1)

@@ -16,6 +16,7 @@ class Actor:
 
 
     def step(self):
+        self.estimator.estimate(*self.transformer.get_grammar_dict())
         self.transformer.creat_nt('"_population"')
         self.transformer.merge_nt(['is_area', 'is_captial_of'])
         self.transformer.combine_nt('predicate', 'conjunction')
