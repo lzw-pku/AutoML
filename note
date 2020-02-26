@@ -15,7 +15,7 @@ IRNet中，decoder的init input是0向量. train的时候没有考虑action spac
 tgt_in是0向量以及全部action   tgt_out是全部action
 
 
-不再排序 而是完全打乱顺序
+数据按照长度排序
 
 S 是 statement，在batch_decode和beam_search中都用了
 beam_search的时候不能出现3次重复

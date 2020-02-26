@@ -32,7 +32,8 @@ class Estimator:
         self.vocab_size = len(self.dataset.word_vector)
 
     def estimate(self, grammar_dict, root_rule):
-        batches, id2rule, productions = self.dataset.parse(grammar_dict, root_rule)
+        (train_batches, test_batches), id2rule, productions = self.dataset.parse(grammar_dict,
+                                                                                 root_rule)
         nonterminal2id, id2nonterminal = self.build_decode_dict(productions)
         self.model = Seq2seqModel(vocab_size=self.vocab_size, emb_dim=self.emb_dim,
                                   n_hidden=self.n_hidden,
@@ -45,10 +46,6 @@ class Estimator:
         #self.model.load_state_dict(state_dict['net'])
         if self.cuda:
             self.model.cuda()
-
-        #self.compute_performance(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
-        #self.compute_performance_decode(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
-        #exit(0)
 
         self.optimizer = torch.optim.SGD([p for p in self.model.parameters() if p.requires_grad],
                                          lr=self.lr)
@@ -63,8 +60,8 @@ class Estimator:
             print('\n\n')
             print('*' * 80)
             print(f'start epoch {i}:')
-            self.train(batches[:-4])
-            performance = self.eval(batches[-4:])
+            self.train(train_batches)
+            performance = self.eval(test_batches)
             self.scheduler.step(performance)
             print(self.optimizer)
             if performance < best_performance:
@@ -78,11 +75,11 @@ class Estimator:
             else:
                 patience -= 1
                 if patience == 0:
+                    self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
                     print('early stop')
                     exit(0)
             if i % 20 == 19:
-                self.compute_performance(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
-                self.compute_performance_decode(batches[-4:], id2rule, nonterminal2id, id2nonterminal)
+                self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
 
     def train(self, batches):
         self.model.train()
@@ -118,25 +115,15 @@ class Estimator:
                                                     nonterminal2id, id2nonterminal)[0]
             #id2rule也许可以被production替代
             batch_actions = torch.stack(batch_actions).transpose(0, 1)
-            #print(batch_actions)
-            #exit(0)
-            #import pickle
-            #with open('tmp.pkl', 'wb') as f:
-            #    pickle.dump((batch_actions, id2rule), f)
-            #exit(0)
             total += len(batch_actions)
             for actions, logical_form in zip(batch_actions, batch.logical_forms):
                 for i in range(len(actions)):
                     if int(actions[i]) == 0:
                         actions = actions[:i]
-                        #print(actions)
                         break
                 try:
                     rule_str = [id2rule[int(act)] for act in actions]
                     rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
-                    print(rule)
-                    print(logical_form)
-                    print('*' * 80)
                     if rule == logical_form:
                         true_example += 1
                 except:
@@ -153,25 +140,15 @@ class Estimator:
                                                     nonterminal2id, id2nonterminal)[0]
             #id2rule也许可以被production替代
             batch_actions = torch.stack(batch_actions).transpose(0, 1)
-            #print(batch_actions)
-            #exit(0)
-            #import pickle
-            #with open('tmp.pkl', 'wb') as f:
-            #    pickle.dump((batch_actions, id2rule), f)
-            #exit(0)
             total += len(batch_actions)
             for actions, logical_form in zip(batch_actions, batch.logical_forms):
                 for i in range(len(actions)):
                     if int(actions[i]) == 0:
                         actions = actions[:i]
-                        #print(actions)
                         break
                 try:
                     rule_str = [id2rule[int(act)] for act in actions]
                     rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
-                    print(rule)
-                    print(logical_form)
-                    print('*' * 80)
                     if rule == logical_form:
                         true_example += 1
                 except:

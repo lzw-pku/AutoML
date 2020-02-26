@@ -58,10 +58,16 @@ def read_prolog_data():
     train_data = './data/geo/geo_prolog_train.tsv'
     train_questions, train_logical_forms = read_tsv(train_data)
     test_questions, test_logical_forms = read_tsv(test_data)
-    quesetions, prologs = train_questions + test_questions, train_logical_forms + test_logical_forms
-    for idx, p in enumerate(prologs):
-        prologs[idx] = normalize_prolog_variable_names(p).lower()
-    return quesetions, prologs
+
+    for idx, p in enumerate(train_logical_forms):
+        train_logical_forms[idx] = normalize_prolog_variable_names(p).lower()
+    for idx, p in enumerate(test_logical_forms):
+        test_logical_forms[idx] = normalize_prolog_variable_names(p).lower()
+
+    #quesetions, prologs = train_questions + test_questions, train_logical_forms + test_logical_forms
+    #for idx, p in enumerate(prologs):
+    #    prologs[idx] = normalize_prolog_variable_names(p).lower()
+    return (train_questions, test_questions), (train_logical_forms, test_logical_forms)
 
 
 def pad_batch_tensorize(inputs, pad, cuda=True):
