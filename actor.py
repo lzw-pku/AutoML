@@ -67,4 +67,4 @@ class Actor:
     def exp(self):
         for _ in range(10):
             self.step()
-        self.perform()
+        self.perform('')

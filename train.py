@@ -8,7 +8,7 @@ from actor import Actor
 from utils import read_prolog_data
 def train(args):
     actor = Actor(args)
-    actor.search()
+    actor.exp()
     '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
     t.creat_nt('"_population"')
