@@ -20,6 +20,7 @@ class Actor:
 
     def search(self):
         self.perform('initial')
+        exit(0)
         for i in range(30):
             print(i)
             try:

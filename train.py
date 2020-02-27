@@ -45,7 +45,7 @@ if __name__ == '__main__':
     #parser.add_argument('--max_action_len', type=int, action='store', default=30,
     #                    help='maximun actions in an output action sequence')
     # training options
-    parser.add_argument('--lr', type=float, action='store', default=3e-1,
+    parser.add_argument('--lr', type=float, action='store', default=1e-3,
                         help='learning rate')
     parser.add_argument('--dropout', type=float, action='store', default=0,
                         help='dropout')

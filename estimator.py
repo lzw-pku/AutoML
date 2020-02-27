@@ -51,8 +51,8 @@ class Estimator:
         if self.cuda:
             self.model.cuda()
 
-        self.optimizer = torch.optim.SGD([p for p in self.model.parameters() if p.requires_grad],
-                                         lr=self.lr, weight_decay=1e-4)
+        self.optimizer = torch.optim.Adam([p for p in self.model.parameters() if p.requires_grad],
+                                          lr=self.lr)
         self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', verbose=True,
                                            factor=self.decay, min_lr=0,
                                            patience=self.lr_p)
@@ -67,6 +67,7 @@ class Estimator:
         for i in range(epoch_num):
             self.train(train_batches)
             performance = self.eval(test_batches)
+            print(performance)
             valid_loss.append(performance)
             if not toy:
                 self.scheduler.step(performance)
