@@ -234,9 +234,12 @@ class Seq2seqModel(nn.Module):
         """embedding is the weight matrix"""
         assert self._embedding.weight.size() == embedding.size()
         self._embedding.weight.data.copy_(embedding)
-        #for p in self._embedding.parameters():
-        #    p.requires_grad = False
+        for p in self._embedding.parameters():
+            p.requires_grad = False
 
+    def train_emb(self):
+        for p in self._embedding.parameters():
+            p.requires_grad = True
 
 class AttentionalLSTMDecoder(object):
     def __init__(self, embedding, lstm, attn_w, projection):

@@ -14,8 +14,20 @@ class Actor:
         self.transformer = Transformer(prolog_grammar.GRAMMAR_DICTIONARY,
                                        prolog_grammar.ROOT_RULE)
 
+        self.performances = []
+        self.actions = []
+
+    def search(self):
+        while True:
+            self.transformer.get_act_space()
+            self.step()
+            exit(0)
 
     def step(self):
+        perform = self.estimator.estimate(*self.transformer.get_grammar_dict())
+        self.performances.append(perform)
+        print(perform)
+        '''
         self.estimator.estimate(*self.transformer.get_grammar_dict())
         self.transformer.creat_nt('"_population"')
         self.transformer.merge_nt(['is_area', 'is_captial_of'])
@@ -23,3 +35,4 @@ class Actor:
         grammar_dict, root_rule = self.transformer.get_grammar_dict()
         #self.estimator.estimate(*self.transformer.get_grammar_dict())
         self.estimator.estimate(grammar_dict, root_rule)
+        '''

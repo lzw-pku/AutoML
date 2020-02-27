@@ -56,14 +56,20 @@ class Estimator:
         self.smooth_loss = 0
         best_performance = 100
         patience = 10
+        start_train_emb = False
         for i in range(self.epoch_num):
-            print('\n\n')
-            print('*' * 80)
-            print(f'start epoch {i}:')
+            print(i)
+            #print('\n\n')
+            #print('*' * 80)
+            #print(f'start epoch {i}:')
             self.train(train_batches)
             performance = self.eval(test_batches)
             self.scheduler.step(performance)
-            print(self.optimizer)
+            if not start_train_emb and self.optimizer.state_dict()['param_groups'][0]['lr'] < 1e-4:
+                self.model.train_emb()
+                start_train_emb = True
+                print('START TRAIN EMB')
+            #print(self.optimizer)
             if performance < best_performance:
                 best_performance = performance
                 save_dict = {}
@@ -94,8 +100,8 @@ class Estimator:
             self.smooth_loss = loss if self.smooth_loss == 0 else \
                 self.smooth_loss * 0.95 + loss * 0.05
 
-            if i % 10 == 0:
-                print('   ', self.smooth_loss)
+            #if i % 10 == 0:
+            #    print('   ', self.smooth_loss)
 
     def eval(self, batches):
         self.model.eval()
@@ -103,7 +109,7 @@ class Estimator:
         for batch in batches:
             logits = self.model(batch.questions, batch.src_lens, batch.actions_in)
             loss += sequence_loss(logits, batch.actions_out, pad_idx=PAD).mean()
-        print(f'loss in validation dataset: {loss / len(batches)}')
+        #print(f'loss in validation dataset: {loss / len(batches)}')
         return loss / len(batches)
 
     def compute_performance(self, batches, id2rule, nonterminal2id, id2nonterminal):

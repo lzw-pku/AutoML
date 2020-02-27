@@ -25,7 +25,7 @@ class Transformer:
         self.nonterminal_num = 0
 
     def creat_nt(self, terminal): # 必须是“ ” 包裹！！！
-        assert terminal.startswith('"') and terminal.endswith('"')
+        assert terminal.startswith('"') and terminal.endswith('"') and terminal in self.terminals
         new_t = 'new_terminal' + str(self.nonterminal_num)
         self.nonterminal_num += 1
         self.non_terminals.add(new_t)
@@ -126,3 +126,30 @@ class Transformer:
             if grammar_flag:
                 break
         return prod_flag and grammar_flag
+
+    def get_act_space(self):
+        import time
+        t1 = time.time()
+        creat_nt = self.terminals
+        merge_nt = []
+        non_terminals = copy.deepcopy(self.non_terminals)
+        for nt1 in self.non_terminals:
+            if any([nt1 in group for group in merge_nt]):
+                continue
+            tmp = [nt1]
+            for nt2 in non_terminals:
+                if nt1 != nt2 and self.check_merge([nt1, nt2]):
+                    tmp.append(nt2)
+            if len(tmp) > 1:
+                merge_nt.append(copy.deepcopy(tmp))
+            for nt in tmp:
+                non_terminals.remove(nt)
+        t2 = time.time()
+        combine_nt = []
+        for nt1 in self.non_terminals:
+            for nt2 in self.non_terminals:
+                if self.check_combine(nt1, nt2):
+                    combine_nt.append((nt1, nt2))
+        t3 = time.time()
+        print(t2 - t1, t3 - t2, t3 - t1)
+        return creat_nt, merge_nt, combine_nt

@@ -8,7 +8,7 @@ from actor import Actor
 from utils import read_prolog_data
 def train(args):
     actor = Actor(args)
-    actor.step()
+    actor.search()
     '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
     t.creat_nt('"_population"')
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     #parser.add_argument('--max_action_len', type=int, action='store', default=30,
     #                    help='maximun actions in an output action sequence')
     # training options
-    parser.add_argument('--lr', type=float, action='store', default=1e-3,
+    parser.add_argument('--lr', type=float, action='store', default=1e-1,
                         help='learning rate')
     parser.add_argument('--dropout', type=float, action='store', default=0,
                         help='dropout')
@@ -57,7 +57,7 @@ if __name__ == '__main__':
                         help='gradient clipping')
     parser.add_argument('--batch', type=int, action='store', default=32,
                         help='the training batch size')
-    parser.add_argument('--epoch_num', type=int, action='store', default=1000,
+    parser.add_argument('--epoch_num', type=int, action='store', default=50,
                         help='the number of training epoches')
     #parser.add_argument(
     #    '--ckpt_freq', type=int, action='store', default=3000,
