@@ -18,6 +18,8 @@ class Actor:
         self.actions = []
 
     def search(self):
+        self.step()
+        exit(0)
         while True:
             self.transformer.get_act_space()
             self.step()

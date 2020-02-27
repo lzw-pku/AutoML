@@ -83,7 +83,7 @@ class Estimator:
                 if patience == 0:
                     self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
                     print('early stop')
-                    exit(0)
+                    break
             if i % 50 == 49:
                 self.compute_performance(test_batches, id2rule, nonterminal2id, id2nonterminal)
                 self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
