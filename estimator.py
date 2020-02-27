@@ -45,7 +45,8 @@ class Estimator:
                                   bidirectional=self.bidirectional, n_layer=self.n_layer,
                                   dropout=self.dropout)
         self.model.set_embedding(torch.tensor(self.dataset.word_vector))
-
+        torch.save(self.model.state_dict(), './initial_model')
+        #exit(0)
         #state_dict = torch.load('exp/ckpt289-0.4418167173862457')
         #self.model.load_state_dict(state_dict['net'])
         if self.cuda:
@@ -53,9 +54,9 @@ class Estimator:
 
         self.optimizer = torch.optim.Adam([p for p in self.model.parameters() if p.requires_grad],
                                           lr=self.lr)
-        self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', verbose=True,
-                                           factor=self.decay, min_lr=0,
-                                           patience=self.lr_p)
+        #self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', verbose=True,
+        #                                   factor=self.decay, min_lr=0,
+        #                                   patience=self.lr_p)
 
         self.smooth_loss = 0
         best_performance = 100
@@ -67,13 +68,13 @@ class Estimator:
         for i in range(epoch_num):
             self.train(train_batches)
             performance = self.eval(test_batches)
-            print(performance)
+            #print(performance)
             valid_loss.append(performance)
-            if not toy:
-                self.scheduler.step(performance)
-            else:
-                if i % 10 == 9:
-                    self.optimizer.state_dict()['param_groups'][0]['lr'] /= 10
+            #if not toy:
+            #    self.scheduler.step(performance)
+            #else:
+            #    if i % 10 == 9:
+            #        self.optimizer.state_dict()['param_groups'][0]['lr'] /= 10
 
             if not toy and not start_train_emb and \
                 self.optimizer.state_dict()['param_groups'][0]['lr'] < 1e-4:
