@@ -2,14 +2,21 @@ import torch
 import argparse
 from grammars.geo import prolog_grammar
 from transform import Transformer
-
+import pickle
 
 from actor import Actor
 from utils import read_prolog_data
 def train(args):
-    actor = Actor(args)
-    for i in range(100):
-        actor.exp(i)
+    i = 0
+    while True:
+        try:
+            actor = Actor(args)
+            actor.exp(i)
+        except BaseException as e:
+            with open('error_i', 'wb') as f:
+                pickle.dump((actor, e), f)
+        finally:
+            i += 1
         #exit(0)
 
     #actor.search()
