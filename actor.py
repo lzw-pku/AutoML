@@ -1,7 +1,8 @@
 from estimator import Estimator
 from transform import Transformer
 import grammars.geo.prolog_grammar as prolog_grammar
-
+import random
+import pickle
 
 class Actor:
     def __init__(self, args):
@@ -18,23 +19,46 @@ class Actor:
         self.actions = []
 
     def search(self):
-        self.step()
-        exit(0)
-        while True:
-            self.transformer.get_act_space()
-            self.step()
-            exit(0)
+        self.step('initial')
+        for step in range(30):
+            print(step)
+            action_space = self.transformer.get_act_space()
+            method = []
+            i = -1
+            while len(method) == 0:
+                i = random.randint(0, 3)
+                method = action_space[i]
+            action = random.choice(method)
+            if i == 0:
+                self.transformer.creat_nt(action)
+            elif i == 1:
+                self.transformer.merge_nt(action)
+            elif i == 2:
+                self.transformer.combine_nt(*action)
+            else:
+                assert i == 3
+                self.transformer.delete_prod(action)
+            self.actions.append((i, action))
+            try:
+                self.step(step)
+            except BaseException as e:
+                print(e)
+                print(self.actions)
+                print(self.performances)
 
-    def step(self):
-        perform = self.estimator.estimate(*self.transformer.get_grammar_dict())
+                with open('gra.pkl', 'wb') as f:
+                    pickle.dump(self.transformer.get_grammar_dict(), f)
+                exit(-1)
+        print(self.performances)
+            #exit(0)
+
+    def step(self, name):
+        grammar_dict, root_rule = self.transformer.get_grammar_dict()
+        perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name=repr(name))
         self.performances.append(perform)
         print(perform)
-        '''
-        self.estimator.estimate(*self.transformer.get_grammar_dict())
-        self.transformer.creat_nt('"_population"')
-        self.transformer.merge_nt(['is_area', 'is_captial_of'])
-        self.transformer.combine_nt('predicate', 'conjunction')
-        grammar_dict, root_rule = self.transformer.get_grammar_dict()
         #self.estimator.estimate(*self.transformer.get_grammar_dict())
-        self.estimator.estimate(grammar_dict, root_rule)
-        '''
+        #self.transformer.creat_nt('"_population"')
+        #self.transformer.merge_nt(['is_area', 'is_captial_of'])
+        #self.transformer.combine_nt('predicate', 'conjunction')
+        #self.transformer.delete_prod('largest')

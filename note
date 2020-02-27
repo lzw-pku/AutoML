@@ -22,3 +22,10 @@ grammar:
     transform没有考虑 ROOT_RULE!!!
     S->A A->B 会把A删掉
     ‘’ 和 “” 有问题，在OneOf和Literal处理时repr会把"a"  变成"'a'" 从而导致key error
+
+    不能删除statement以及answer
+
+
+
+问题：
+    double combine

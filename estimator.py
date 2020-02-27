@@ -7,6 +7,8 @@ from utils import PAD, sequence_loss
 import torch.nn.functional as F
 from os.path import join
 from grammars.utils import normalize_prolog_variable_names, action_sequence_to_logical_form
+import time
+
 
 class Estimator:
     def __init__(self, emb_dim, n_hidden, bidirectional,
@@ -31,9 +33,11 @@ class Estimator:
         self.dataset = GeoDataset(emb_dim, batch_size, cuda)
         self.vocab_size = len(self.dataset.word_vector)
 
-    def estimate(self, grammar_dict, root_rule):
+    def estimate(self, grammar_dict, root_rule, toy=False, name=''):
+        time1 = time.time()
         (train_batches, test_batches), id2rule, productions = self.dataset.parse(grammar_dict,
                                                                                  root_rule)
+        print('parsing time:', time.time() - time1)
         nonterminal2id, id2nonterminal = self.build_decode_dict(productions)
         self.model = Seq2seqModel(vocab_size=self.vocab_size, emb_dim=self.emb_dim,
                                   n_hidden=self.n_hidden,
@@ -57,36 +61,43 @@ class Estimator:
         best_performance = 100
         patience = 10
         start_train_emb = False
-        for i in range(self.epoch_num):
-            print(i)
-            #print('\n\n')
-            #print('*' * 80)
-            #print(f'start epoch {i}:')
+        best_exact_match = 0
+        epoch_num = 30 if toy else self.epoch_num
+        for i in range(epoch_num):
             self.train(train_batches)
             performance = self.eval(test_batches)
-            self.scheduler.step(performance)
-            if not start_train_emb and self.optimizer.state_dict()['param_groups'][0]['lr'] < 1e-4:
+            if not toy:
+                self.scheduler.step(performance)
+            else:
+                if i % 10 == 9:
+                    self.optimizer.state_dict()['param_groups'][0]['lr'] /= 10
+
+            if not toy and not start_train_emb and \
+                self.optimizer.state_dict()['param_groups'][0]['lr'] < 1e-4:
                 self.model.train_emb()
                 start_train_emb = True
-                print('START TRAIN EMB')
-            #print(self.optimizer)
+                #print('START TRAIN EMB')
             if performance < best_performance:
                 best_performance = performance
                 save_dict = {}
                 save_dict['metric'] = performance
                 save_dict['net'] = self.model.state_dict()
                 save_dict['optim'] = self.optimizer.state_dict()
-                torch.save(save_dict, join(self.path, f'model'))
+                torch.save(save_dict, join(self.path, f'model-{name}'))
                 patience = 10
             else:
                 patience -= 1
                 if patience == 0:
-                    self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
-                    print('early stop')
+                    score = self.compute_performance_decode(test_batches, id2rule,
+                                                            nonterminal2id, id2nonterminal)
+                    best_exact_match = max(best_exact_match, score)
+                    #print('early stop')
                     break
             if i % 50 == 49:
-                self.compute_performance(test_batches, id2rule, nonterminal2id, id2nonterminal)
-                self.compute_performance_decode(test_batches, id2rule, nonterminal2id, id2nonterminal)
+                score = self.compute_performance_decode(test_batches, id2rule,
+                                                        nonterminal2id, id2nonterminal)
+                best_exact_match = max(best_exact_match, score)
+        return best_exact_match
 
     def train(self, batches):
         self.model.train()
@@ -135,7 +146,8 @@ class Estimator:
                         true_example += 1
                 except:
                     continue
-        print('exact match: ', true_example / total)
+        return true_example / total
+        #print('exact match: ', true_example / total)
 
     def compute_performance_decode(self, batches, id2rule, nonterminal2id, id2nonterminal):
         self.model.eval()
@@ -160,13 +172,14 @@ class Estimator:
                         true_example += 1
                 except:
                     continue
-        print('exact match: ', true_example / total)
+        return true_example / total
+        #print('exact match: ', true_example / total)
 
     def build_decode_dict(self, productions):
         nonterminal2id = {}
         id2nonterminal = {}
         for prod in productions:
-            print(prod.lhs, prod.rhs_nonterminal, prod.rule_id)
+            #print(prod.lhs, prod.rhs_nonterminal, prod.rule_id)
             k, v, id = prod.lhs, prod.rhs_nonterminal, prod.rule_id
             if k not in nonterminal2id.keys():
                 nonterminal2id[k] = [id]

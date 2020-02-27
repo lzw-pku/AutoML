@@ -3,6 +3,13 @@ from grammars.grammar import Grammar
 import re
 
 
+def safe_replace(string, old, new):
+    def replace(matched):
+        s = matched.group()
+        return s.replace(old, new)
+    return re.sub(f'[(| ]{old}[)| ]', replace, string)
+
+
 class Transformer:
     def __init__(self, grammar_dict, root_rule):
         grammar = Grammar(grammar_dict, root_rule)
@@ -34,7 +41,7 @@ class Transformer:
         self.productions.append([new_t, [terminal]])
 
         for k in self._grammar_dictionary.keys():
-            self._grammar_dictionary[k] = list(map(lambda s: s.replace(terminal, f' {new_t} '),
+            self._grammar_dictionary[k] = list(map(lambda s: safe_replace(s, terminal, f' {new_t} '),
                                                    self._grammar_dictionary[k]))
         self._grammar_dictionary[new_t] = [terminal]
 
@@ -49,7 +56,7 @@ class Transformer:
 
         def replace(s):
             for nonterminal in nonterminal_list:
-                s = s.replace(nonterminal, new_t)
+                s = safe_replace(s, nonterminal, new_t)
             return s
 
         for k in self._grammar_dictionary.keys():
@@ -82,12 +89,35 @@ class Transformer:
         self._grammar_dictionary[new_t] = [f'({nt1} ws {nt2})']
 
 
-    def delete_prod(self, prod_id):
-        pass
-        k, v = self.productions[prod_id]
+    def delete_prod(self, nonterminal):
+        #pass
+        #k, v = self.productions[prod_id]
         #for
-        self.productions[prod_id] = None
+        #self.productions[prod_id] = None
+        assert len(self._grammar_dictionary[nonterminal]) == 1
+        rhs = None
+        for k, v in self.productions:
+            if k == nonterminal:
+                rhs = v
+        self.productions.remove([nonterminal, rhs])
+        self.non_terminals.remove(nonterminal)
+        for production in self.productions:
+            flag = True
+            while flag:
+                flag = False
+                for i in range(len(production[1])):
+                    if production[1][i] == nonterminal:
+                        flag = True
+                        break
+                production[1] = production[1][:i] + rhs + production[(i + 1):]
 
+        rhs = self._grammar_dictionary[nonterminal][0].strip('()') # str
+        self._grammar_dictionary.pop(nonterminal)
+        for k in self._grammar_dictionary.keys():
+            self._grammar_dictionary[k] = list(map(lambda x:
+                                                   '(' + rhs + ')' if x == nonterminal
+                                                   else safe_replace(x, nonterminal, rhs),
+                                                   self._grammar_dictionary[k]))
 
     def get_grammar_dict(self):
         return self._grammar_dictionary, self.root_rule
@@ -103,7 +133,7 @@ class Transformer:
                                 if nonterminal1 in x1 and x1.replace(nonterminal1, nonterminal) == x:
                                     break
                             else:
-                                print(nonterminal, k, v, x)
+                                #print(nonterminal, k, v, x)
                                 return False
                         break
         return True
@@ -130,7 +160,7 @@ class Transformer:
     def get_act_space(self):
         import time
         t1 = time.time()
-        creat_nt = self.terminals
+        creat_nt = list(self.terminals)
         merge_nt = []
         non_terminals = copy.deepcopy(self.non_terminals)
         for nt1 in self.non_terminals:
@@ -148,8 +178,17 @@ class Transformer:
         combine_nt = []
         for nt1 in self.non_terminals:
             for nt2 in self.non_terminals:
-                if self.check_combine(nt1, nt2):
+                if nt1 != nt2 and self.check_combine(nt1, nt2):
                     combine_nt.append((nt1, nt2))
         t3 = time.time()
-        print(t2 - t1, t3 - t2, t3 - t1)
-        return creat_nt, merge_nt, combine_nt
+        delete_nt = []
+        m = {}
+        for k, _ in self.productions:
+            if k in m.keys():
+                m[k] += 1
+            else:
+                m[k] = 1
+        for k in m.keys():
+            if m[k] == 1 and k != 'statement' and k != 'answer':
+                delete_nt.append(k)
+        return creat_nt, merge_nt, combine_nt, delete_nt

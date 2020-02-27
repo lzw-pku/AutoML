@@ -45,19 +45,19 @@ if __name__ == '__main__':
     #parser.add_argument('--max_action_len', type=int, action='store', default=30,
     #                    help='maximun actions in an output action sequence')
     # training options
-    parser.add_argument('--lr', type=float, action='store', default=1e-1,
+    parser.add_argument('--lr', type=float, action='store', default=3e-1,
                         help='learning rate')
     parser.add_argument('--dropout', type=float, action='store', default=0,
                         help='dropout')
     parser.add_argument('--decay', type=float, action='store', default=0.5,
                         help='learning rate decay ratio')
-    parser.add_argument('--lr_p', type=int, action='store', default=0,
+    parser.add_argument('--lr_p', type=int, action='store', default=3,
                         help='patience for learning rate decay')
     parser.add_argument('--clip', type=float, action='store', default=2.0,
                         help='gradient clipping')
     parser.add_argument('--batch', type=int, action='store', default=32,
                         help='the training batch size')
-    parser.add_argument('--epoch_num', type=int, action='store', default=50,
+    parser.add_argument('--epoch_num', type=int, action='store', default=500,
                         help='the number of training epoches')
     #parser.add_argument(
     #    '--ckpt_freq', type=int, action='store', default=3000,
