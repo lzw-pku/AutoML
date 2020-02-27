@@ -58,9 +58,9 @@ class Estimator:
 
         self.optimizer = torch.optim.Adam([p for p in self.model.parameters() if p.requires_grad],
                                           lr=self.lr)
-        #self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', verbose=True,
-        #                                   factor=self.decay, min_lr=0,
-        #                                   patience=self.lr_p)
+        self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', verbose=True,
+                                           factor=self.decay, min_lr=0,
+                                           patience=self.lr_p)
 
         self.smooth_loss = 0
         best_performance = 100
@@ -74,16 +74,16 @@ class Estimator:
             performance = self.eval(test_batches)
             #print(performance)
             valid_loss.append(performance)
-            #if not toy:
-            #    self.scheduler.step(performance)
-            #else:
-            #    if i % 10 == 9:
-            #        self.optimizer.state_dict()['param_groups'][0]['lr'] /= 10
+            if not toy:
+                self.scheduler.step(performance)
+            else:
+                if i % 10 == 9:
+                    self.optimizer.state_dict()['param_groups'][0]['lr'] /= 2
 
-            if not toy and not start_train_emb and \
-                self.optimizer.state_dict()['param_groups'][0]['lr'] < 1e-4:
-                self.model.train_emb()
-                start_train_emb = True
+            #if not toy and not start_train_emb and \
+            #    self.optimizer.state_dict()['param_groups'][0]['lr'] < 1e-4:
+            #    self.model.train_emb()
+            #    start_train_emb = True
                 #print('START TRAIN EMB')
             if performance < best_performance:
                 best_performance = performance
