@@ -63,9 +63,11 @@ class Estimator:
         start_train_emb = False
         best_exact_match = 0
         epoch_num = 30 if toy else self.epoch_num
+        valid_loss = []
         for i in range(epoch_num):
             self.train(train_batches)
             performance = self.eval(test_batches)
+            valid_loss.append(performance)
             if not toy:
                 self.scheduler.step(performance)
             else:
@@ -83,6 +85,7 @@ class Estimator:
                 save_dict['metric'] = performance
                 save_dict['net'] = self.model.state_dict()
                 save_dict['optim'] = self.optimizer.state_dict()
+                save_dict['losses'] = valid_loss
                 torch.save(save_dict, join(self.path, f'model-{name}'))
                 patience = 10
             else:

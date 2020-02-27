@@ -7,7 +7,7 @@ def safe_replace(string, old, new):
     def replace(matched):
         s = matched.group()
         return s.replace(old, new)
-    return re.sub(f'[(| ]{old}[)| ]', replace, string)
+    return re.sub(f'(\(| |^){old}(\)| |$)', replace, string)
 
 
 class Transformer:

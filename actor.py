@@ -19,40 +19,41 @@ class Actor:
         self.actions = []
 
     def search(self):
-        self.step('initial')
-        for step in range(30):
-            print(step)
-            action_space = self.transformer.get_act_space()
-            method = []
-            i = -1
-            while len(method) == 0:
-                i = random.randint(0, 3)
-                method = action_space[i]
-            action = random.choice(method)
-            if i == 0:
-                self.transformer.creat_nt(action)
-            elif i == 1:
-                self.transformer.merge_nt(action)
-            elif i == 2:
-                self.transformer.combine_nt(*action)
-            else:
-                assert i == 3
-                self.transformer.delete_prod(action)
-            self.actions.append((i, action))
+        self.perform('initial')
+        for i in range(30):
+            print(i)
             try:
-                self.step(step)
+                self.perform(i)
             except BaseException as e:
                 print(e)
                 print(self.actions)
                 print(self.performances)
-
                 with open('gra.pkl', 'wb') as f:
                     pickle.dump(self.transformer.get_grammar_dict(), f)
                 exit(-1)
         print(self.performances)
             #exit(0)
 
-    def step(self, name):
+    def step(self):
+        action_space = self.transformer.get_act_space()
+        method = []
+        i = -1
+        while len(method) == 0:
+            i = random.randint(0, 3)
+            method = action_space[i]
+        action = random.choice(method)
+        if i == 0:
+            self.transformer.creat_nt(action)
+        elif i == 1:
+            self.transformer.merge_nt(action)
+        elif i == 2:
+            self.transformer.combine_nt(*action)
+        else:
+            assert i == 3
+            self.transformer.delete_prod(action)
+        self.actions.append((i, action))
+
+    def perform(self, name):
         grammar_dict, root_rule = self.transformer.get_grammar_dict()
         perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name=repr(name))
         self.performances.append(perform)
@@ -62,3 +63,8 @@ class Actor:
         #self.transformer.merge_nt(['is_area', 'is_captial_of'])
         #self.transformer.combine_nt('predicate', 'conjunction')
         #self.transformer.delete_prod('largest')
+
+    def exp(self):
+        for _ in range(10):
+            self.step()
+        self.perform()
