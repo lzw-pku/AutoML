@@ -51,7 +51,7 @@ if __name__ == '__main__':
                         help='dropout')
     parser.add_argument('--decay', type=float, action='store', default=0.5,
                         help='learning rate decay ratio')
-    parser.add_argument('--lr_p', type=int, action='store', default=3,
+    parser.add_argument('--lr_p', type=int, action='store', default=6,
                         help='patience for learning rate decay')
     parser.add_argument('--clip', type=float, action='store', default=2.0,
                         help='gradient clipping')
