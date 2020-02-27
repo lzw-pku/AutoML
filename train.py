@@ -7,6 +7,7 @@ import pickle
 from actor import Actor
 from utils import read_prolog_data
 def train(args):
+    '''
     i = 0
     while True:
         try:
@@ -18,8 +19,9 @@ def train(args):
         finally:
             i += 1
         #exit(0)
-
-    #actor.search()
+    '''
+    actor = Actor(args)
+    actor.search()
     '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
     t.creat_nt('"_population"')

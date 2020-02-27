@@ -21,9 +21,10 @@ class Actor:
     def search(self):
         self.perform('initial')
         #exit(0)
-        for i in range(30):
+        for i in range(25):
             print(i)
             try:
+                self.step()
                 self.perform(i)
             except BaseException as e:
                 print(e)
@@ -65,8 +66,9 @@ class Actor:
         #self.transformer.merge_nt(['is_area', 'is_captial_of'])
         #self.transformer.combine_nt('predicate', 'conjunction')
         #self.transformer.delete_prod('largest')
-
+    '''
     def exp(self, name):
         for _ in range(10):
             self.step()
         self.perform(name)
+    '''
