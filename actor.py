@@ -57,6 +57,7 @@ class Actor:
     def perform(self, name):
         grammar_dict, root_rule = self.transformer.get_grammar_dict()
         perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name=repr(name))
+        #return perform
         self.performances.append(perform)
         print(perform)
         #self.estimator.estimate(*self.transformer.get_grammar_dict())
@@ -65,7 +66,7 @@ class Actor:
         #self.transformer.combine_nt('predicate', 'conjunction')
         #self.transformer.delete_prod('largest')
 
-    def exp(self):
+    def exp(self, name):
         for _ in range(10):
             self.step()
-        self.perform('')
+        self.perform(name)

@@ -37,6 +37,9 @@ class Estimator:
         time1 = time.time()
         (train_batches, test_batches), id2rule, productions = self.dataset.parse(grammar_dict,
                                                                                  root_rule)
+        #print(id2rule)
+
+        #return train_batches
         print('parsing time:', time.time() - time1)
         nonterminal2id, id2nonterminal = self.build_decode_dict(productions)
         self.model = Seq2seqModel(vocab_size=self.vocab_size, emb_dim=self.emb_dim,
