@@ -124,7 +124,7 @@ class Estimator:
             logits = self.model(batch.questions, batch.src_lens, batch.actions_in)
             loss += sequence_loss(logits, batch.actions_out, pad_idx=PAD).mean()
         #print(f'loss in validation dataset: {loss / len(batches)}')
-        return loss / len(batches)
+        return loss.item() / len(batches)
 
     def compute_performance(self, batches, id2rule, nonterminal2id, id2nonterminal):
         self.model.eval()
