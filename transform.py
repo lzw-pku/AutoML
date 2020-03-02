@@ -57,7 +57,8 @@ class Transformer:
             if production not in tmp_productions:
                 tmp_productions.append(production)
         self.productions = tmp_productions
-        self.productions.append([new_t, nonterminal_list])
+        for nonterminal in nonterminal_list:
+            self.productions.append([new_t, nonterminal])
 
         def replace(s):
             for nonterminal in nonterminal_list:

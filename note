@@ -31,3 +31,6 @@ grammar:
     double combine
     duoble merge
     double create
+
+
+    is_captial_of ????
