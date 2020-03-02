@@ -9,13 +9,8 @@ from utils import read_prolog_data
 def train(args):
     i = 0
     while True:
-        try:
-            actor = Actor(args)
-            actor.exp(i)
-        except:
-            continue
-        finally:
-            i += 1
+        actor = Actor(args)
+        actor.exp(i)
         #exit(0)
     '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
