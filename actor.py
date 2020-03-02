@@ -88,6 +88,7 @@ class Actor:
             pickle.dump(self.transformer, f)
         perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name=repr(name))
         self.performances.append(perform)
+        print(perform)
         return perform
 
 
