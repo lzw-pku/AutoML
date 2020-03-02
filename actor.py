@@ -69,7 +69,6 @@ class Actor:
             method = action_space[i]
         action = random.choice(method)
         print(i, action)
-        #try:
         if i == 0:
             self.transformer.creat_nt(action)
         elif i == 1:
@@ -79,26 +78,16 @@ class Actor:
         else:
             assert i == 3
             self.transformer.delete_prod(action)
-        #except:
-        #    print(self.actions)
-        #    print(action)
-        #    with open('error_i', 'wb') as f:
-        #        pickle.dump((actor, e), f)
-        t3 = time.time()
-        print('search time:', t2 - t1, '  apply time:', t3 - t2)
         self.actions.append((i, action))
 
     def perform(self, name):
         grammar_dict, root_rule = self.transformer.get_grammar_dict()
+        with open(f'grammar-{name}', 'wb') as f:
+            pickle.dump(self.transformer, f)
         perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name=repr(name))
-        #return perform
         self.performances.append(perform)
-        print(perform)
-        #self.estimator.estimate(*self.transformer.get_grammar_dict())
-        #self.transformer.creat_nt('"_population"')
-        #self.transformer.merge_nt(['is_area', 'is_captial_of'])
-        #self.transformer.combine_nt('predicate', 'conjunction')
-        #self.transformer.delete_prod('largest')
+        return perform
+
 
     def exp(self, name):
         for _ in range(30):
