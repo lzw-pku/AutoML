@@ -32,7 +32,8 @@ class Transformer:
         self.nonterminal_num = 0
 
     def creat_nt(self, terminal): # 必须是“ ” 包裹！！！
-        assert terminal.startswith('"') and terminal.endswith('"') and terminal in self.terminals
+        assert terminal.startswith('"') and terminal.endswith('"') and terminal in self.terminals \
+        and terminal != '","' and terminal != '"("' and terminal != '")"' and terminal != '""'
         new_t = 'new_terminal' + str(self.nonterminal_num)
         self.nonterminal_num += 1
         self.non_terminals.add(new_t)
@@ -170,6 +171,11 @@ class Transformer:
         import time
         t1 = time.time()
         creat_nt = list(self.terminals)
+        creat_nt.remove('","')
+        creat_nt.remove('"("')
+        creat_nt.remove('")"')
+        creat_nt.remove('""')
+
         merge_nt = []
         non_terminals = copy.deepcopy(self.non_terminals)
         for nt1 in self.non_terminals:
@@ -185,10 +191,17 @@ class Transformer:
                 non_terminals.remove(nt)
         t2 = time.time()
         combine_nt = []
+        '''
+        for k, v in self._grammar_dictionary.items():
+            for prod in v:
+                if re.search('[a-z] +ws +[a-z]]', prod) is not None:
+        '''
+
         for nt1 in self.non_terminals:
             for nt2 in self.non_terminals:
                 if nt1 != nt2 and self.check_combine(nt1, nt2):
                     combine_nt.append((nt1, nt2))
+
         t3 = time.time()
         delete_nt = []
         m = {}

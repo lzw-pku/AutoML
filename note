@@ -24,6 +24,7 @@ grammar:
     ‘’ 和 “” 有问题，在OneOf和Literal处理时repr会把"a"  变成"'a'" 从而导致key error
 
     不能删除statement以及answer
+    createNT不能是（ ） 和，
 
 
 
@@ -34,3 +35,5 @@ grammar:
 
 
     is_captial_of ????
+
+
