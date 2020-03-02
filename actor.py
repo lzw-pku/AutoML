@@ -58,7 +58,10 @@ class Actor:
             #exit(0)
 
     def step(self):
+        import time
+        t1 = time.time()
         action_space = self.transformer.get_act_space()
+        t2 = time.time()
         method = []
         i = -1
         while len(method) == 0:
@@ -81,6 +84,8 @@ class Actor:
         #    print(action)
         #    with open('error_i', 'wb') as f:
         #        pickle.dump((actor, e), f)
+        t3 = time.time()
+        print('search time:', t2 - t1, '  apply time:', t3 - t2)
         self.actions.append((i, action))
 
     def perform(self, name):
