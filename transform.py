@@ -106,6 +106,7 @@ class Transformer:
         for k, v in self.productions:
             if k == nonterminal:
                 rhs = copy.deepcopy(v) # !!!
+                break
         self.productions.remove([nonterminal, rhs])
         self.non_terminals.remove(nonterminal)
         for production in self.productions:
@@ -116,7 +117,8 @@ class Transformer:
                     if production[1][i] == nonterminal:
                         flag = True
                         break
-                production[1] = production[1][:i] + rhs + production[(i + 1):]
+                if flag:
+                    production[1] = production[1][:i] + rhs + production[1][(i + 1):]
 
         rhs = self._grammar_dictionary[nonterminal][0].strip('()') # str
         self._grammar_dictionary.pop(nonterminal)

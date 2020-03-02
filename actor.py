@@ -3,7 +3,23 @@ from transform import Transformer
 import grammars.geo.prolog_grammar as prolog_grammar
 import random
 import pickle
-
+'''
+t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
+t.creat_nt('"_capital"')
+t.delete_prod('is_captial_of')
+t.creat_nt('"1.0"')
+t.merge_nt(['is_capital', 'is_mountain', 'is_major', 'is_place', 'is_river', 'is_state', 'is_lake', 'is_city'])
+t.creat_nt('"_stateid"')
+t.delete_prod('len')
+t.delete_prod('is_city')
+t.creat_nt('"_longer"')
+t.merge_nt(['is_capital', 'is_mountain', 'is_major', 'is_place', 'is_river', 'is_state', 'is_lake'])
+t.delete_prod('longest')
+t.delete_prod('unit_relation')
+for k, v in t.productions:
+    print(k, v)
+exit(0)
+'''
 class Actor:
     def __init__(self, args):
         self.estimator = Estimator(emb_dim=args.emb_dim, n_hidden=args.n_hidden, bidirectional=args.bi,
