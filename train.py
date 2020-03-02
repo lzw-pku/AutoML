@@ -13,7 +13,8 @@ def train(args):
     i = 0
     while True:
         actor = Actor(args)
-
+        actor.transformer.get_act_space()
+        exit(0)
         #actor.transformer.creat_nt('"v0"')
         #actor.transformer.merge_nt(['is_capital', 'is_mountain', 'is_major', 'is_place', 'is_river', 'is_state', 'is_lake', 'is_city'])
         #save(actor.transformer.get_grammar_dict()[0], 'shit2')

@@ -26,7 +26,8 @@ grammar:
     不能删除statement以及answer
     createNT不能是（ ） 和，  ""
 
-    fix merge后多个相同的production问题后，发现如果有A->B B要求两侧加上（），所以增加了normalization函数
+    fix merge后多个相同的production问题后，发现顺序有影响！！！
+    mergeNT后可能会出现NT没有被（）包裹
 
 
 问题：

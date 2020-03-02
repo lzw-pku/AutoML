@@ -191,14 +191,14 @@ class Transformer:
         '''
 
     def get_act_space(self):
-        import time
-        t1 = time.time()
+        #import time
+        #t1 = time.time()
         creat_nt = list(self.terminals)
         creat_nt.remove('","')
         creat_nt.remove('"("')
         creat_nt.remove('")"')
         creat_nt.remove('""')
-
+        #t2 = time.time()
         merge_nt = []
         non_terminals = copy.deepcopy(self.non_terminals)
         for nt1 in self.non_terminals:
@@ -212,20 +212,27 @@ class Transformer:
                 merge_nt.append(copy.deepcopy(tmp))
             for nt in tmp:
                 non_terminals.remove(nt)
-        t2 = time.time()
+        #t3 = time.time()
         combine_nt = []
+
+        for k, prod in self.productions:
+            for i in range(len(prod) - 1):
+                if prod[i] in self.non_terminals and prod[i + 1] in self.non_terminals \
+                        and (prod[i], prod[i + 1]) not in combine_nt:
+                    combine_nt.append((prod[i], prod[i + 1]))
+        #print(combine_nt)
         '''
         for k, v in self._grammar_dictionary.items():
             for prod in v:
-                if re.search('[a-z] +ws +[a-z]]', prod) is not None:
+                if re.search('[^"] +ws +[^"]]', prod) is not None:
         '''
-
+        '''
         for nt1 in self.non_terminals:
             for nt2 in self.non_terminals:
                 if nt1 != nt2 and self.check_combine(nt1, nt2):
                     combine_nt.append((nt1, nt2))
-
-        t3 = time.time()
+        '''
+        #t4 = time.time()
         delete_nt = []
         m = {}
         for k, _ in self.productions:
@@ -236,4 +243,5 @@ class Transformer:
         for k in m.keys():
             if m[k] == 1 and k != 'statement' and k != 'answer':
                 delete_nt.append(k)
+        #print(t2 - t1, t3 - t2, t4 - t3, time.time() - t4)
         return creat_nt, merge_nt, combine_nt, delete_nt
