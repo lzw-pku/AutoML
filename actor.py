@@ -3,6 +3,7 @@ from transform import Transformer
 import grammars.geo.prolog_grammar as prolog_grammar
 import random
 import pickle
+import os
 '''
 t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
 t.merge_nt(['is_capital', 'is_mountain', 'is_major', 'is_place', 'is_river', 'is_state', 'is_lake', 'is_city'])
@@ -38,6 +39,7 @@ class Actor:
 
         self.performances = []
         self.actions = []
+        self.path = args.path
 
     def search(self):
         self.perform('initial')
@@ -82,7 +84,7 @@ class Actor:
 
     def perform(self, name):
         grammar_dict, root_rule = self.transformer.get_grammar_dict()
-        with open(f'grammar-{name}', 'wb') as f:
+        with open(os.path.join(self.path, f'grammar-{name}'), 'wb') as f:
             pickle.dump(self.transformer, f)
         perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name=repr(name))
         self.performances.append(perform)
