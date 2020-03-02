@@ -7,21 +7,16 @@ import pickle
 from actor import Actor
 from utils import read_prolog_data
 def train(args):
-    '''
     i = 0
     while True:
         try:
             actor = Actor(args)
             actor.exp(i)
-        except BaseException as e:
-            with open('error_i', 'wb') as f:
-                pickle.dump((actor, e), f)
+        except:
+            continue
         finally:
             i += 1
         #exit(0)
-    '''
-    actor = Actor(args)
-    actor.search()
     '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
     t.creat_nt('"_population"')

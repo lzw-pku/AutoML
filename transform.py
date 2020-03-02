@@ -52,6 +52,11 @@ class Transformer:
         self.non_terminals.add(new_t)
         for production in self.productions:
             production[1] = list(map(lambda x: new_t if x in nonterminal_list else x, production[1]))
+        tmp_productions = []
+        for production in self.productions:
+            if production not in tmp_productions:
+                tmp_productions.append(production)
+        self.productions = tmp_productions
         self.productions.append([new_t, nonterminal_list])
 
         def replace(s):
@@ -61,6 +66,7 @@ class Transformer:
 
         for k in self._grammar_dictionary.keys():
             self._grammar_dictionary[k] = list(map(replace, self._grammar_dictionary[k]))
+            self._grammar_dictionary[k] = list(set(self._grammar_dictionary))
             #print(k, self._grammar_dictionary[k])
         self._grammar_dictionary[new_t] = nonterminal_list
 
@@ -98,7 +104,7 @@ class Transformer:
         rhs = None
         for k, v in self.productions:
             if k == nonterminal:
-                rhs = v
+                rhs = copy.deepcopy(v) # !!!
         self.productions.remove([nonterminal, rhs])
         self.non_terminals.remove(nonterminal)
         for production in self.productions:

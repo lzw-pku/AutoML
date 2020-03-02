@@ -44,6 +44,8 @@ class Actor:
             i = random.randint(0, 3)
             method = action_space[i]
         action = random.choice(method)
+        print(i, action)
+        #try:
         if i == 0:
             self.transformer.creat_nt(action)
         elif i == 1:
@@ -53,6 +55,11 @@ class Actor:
         else:
             assert i == 3
             self.transformer.delete_prod(action)
+        #except:
+        #    print(self.actions)
+        #    print(action)
+        #    with open('error_i', 'wb') as f:
+        #        pickle.dump((actor, e), f)
         self.actions.append((i, action))
 
     def perform(self, name):
@@ -66,9 +73,8 @@ class Actor:
         #self.transformer.merge_nt(['is_area', 'is_captial_of'])
         #self.transformer.combine_nt('predicate', 'conjunction')
         #self.transformer.delete_prod('largest')
-    '''
+
     def exp(self, name):
-        for _ in range(10):
+        for _ in range(30):
             self.step()
         self.perform(name)
-    '''
