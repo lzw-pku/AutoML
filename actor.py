@@ -5,10 +5,15 @@ import random
 import pickle
 '''
 t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
+t.merge_nt(['is_capital', 'is_mountain', 'is_major', 'is_place', 'is_river', 'is_state', 'is_lake', 'is_city'])
+for k, v in t.get_grammar_dict()[0].items():
+    print(k, v)
+exit(0)
+'''
+'''
 t.creat_nt('"_capital"')
 t.delete_prod('is_captial_of')
 t.creat_nt('"1.0"')
-t.merge_nt(['is_capital', 'is_mountain', 'is_major', 'is_place', 'is_river', 'is_state', 'is_lake', 'is_city'])
 t.creat_nt('"_stateid"')
 t.delete_prod('len')
 t.delete_prod('is_city')

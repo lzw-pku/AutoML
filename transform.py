@@ -45,6 +45,7 @@ class Transformer:
             self._grammar_dictionary[k] = list(map(lambda s: safe_replace(s, terminal, f' {new_t} '),
                                                    self._grammar_dictionary[k]))
         self._grammar_dictionary[new_t] = [terminal]
+        #self.normalization()
 
     def merge_nt(self, nonterminal_list):
         assert self.check_merge(nonterminal_list)
@@ -68,9 +69,15 @@ class Transformer:
 
         for k in self._grammar_dictionary.keys():
             self._grammar_dictionary[k] = list(map(replace, self._grammar_dictionary[k]))
-            self._grammar_dictionary[k] = list(set(self._grammar_dictionary[k]))
+            tmp_v = []
+            for v in self._grammar_dictionary[k]:
+                if v not in tmp_v:
+                    tmp_v.append(v)
+            self._grammar_dictionary[k] = tmp_v
+            #self._grammar_dictionary[k] = list(set(self._grammar_dictionary[k]))
             #print(k, self._grammar_dictionary[k])
         self._grammar_dictionary[new_t] = nonterminal_list
+        #self.normalization()
 
     def combine_nt(self, nt1, nt2):
         assert self.check_combine(nt1, nt2)
@@ -95,7 +102,7 @@ class Transformer:
             self._grammar_dictionary[k] = list(map(lambda x: re.sub(nt1 + ' +ws +' + nt2, new_t, x),
                                                    self._grammar_dictionary[k]))
         self._grammar_dictionary[new_t] = [f'({nt1} ws {nt2})']
-
+        #self.normalization()
 
     def delete_prod(self, nonterminal):
         #pass
@@ -128,6 +135,7 @@ class Transformer:
                                                    '(' + rhs + ')' if x == nonterminal
                                                    else safe_replace(x, nonterminal, rhs),
                                                    self._grammar_dictionary[k]))
+        #self.normalization()
 
     def get_grammar_dict(self):
         return self._grammar_dictionary, self.root_rule
@@ -166,6 +174,21 @@ class Transformer:
             if grammar_flag:
                 break
         return prod_flag and grammar_flag
+
+    def normalization(self):
+        pass
+        '''
+        def normal(x):
+            if x in self._grammar_dictionary.keys():
+                return f'({x})'
+            else:
+                return x
+
+        for k in self._grammar_dictionary.keys():
+            self._grammar_dictionary[k] = list(map(normal, self._grammar_dictionary[k]))
+        for k, v in self._grammar_dictionary.items():
+            print(k, v)
+        '''
 
     def get_act_space(self):
         import time
