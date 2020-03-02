@@ -66,7 +66,7 @@ class Transformer:
 
         for k in self._grammar_dictionary.keys():
             self._grammar_dictionary[k] = list(map(replace, self._grammar_dictionary[k]))
-            self._grammar_dictionary[k] = list(set(self._grammar_dictionary))
+            self._grammar_dictionary[k] = list(set(self._grammar_dictionary[k]))
             #print(k, self._grammar_dictionary[k])
         self._grammar_dictionary[new_t] = nonterminal_list
 
