@@ -96,3 +96,10 @@ class Actor:
         for _ in range(30):
             self.step()
         self.perform(name)
+
+    def one(self, path):
+        with open(path, 'rb') as f:
+            self.transformer = pickle.load(f)
+        grammar_dict, root_rule = self.transformer.get_grammar_dict()
+        perform = self.estimator.estimate(grammar_dict, root_rule, toy=False, name='tmp')
+        print(perform)
