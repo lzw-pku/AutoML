@@ -48,10 +48,10 @@ class Estimator:
                                   bidirectional=self.bidirectional, n_layer=self.n_layer,
                                   dropout=self.dropout)
         self.model.set_embedding(torch.tensor(self.dataset.word_vector))
-        state_dict = torch.load('initial_model')
-        state_dict['_dec_embedding.weight'] = state_dict['_dec_embedding.weight'][:self.dataset.grammar.num_rules + 1]
+        #state_dict = torch.load('initial_model')
+        #state_dict['_dec_embedding.weight'] = state_dict['_dec_embedding.weight'][:self.dataset.grammar.num_rules + 1]
         #
-        self.model.load_state_dict(state_dict)
+        #self.model.load_state_dict(state_dict)
         #torch.save(self.model.state_dict(), './initial_model')
         #exit(0)
         #state_dict = torch.load('exp/ckpt289-0.4418167173862457')
