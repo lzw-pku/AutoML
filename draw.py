@@ -1,7 +1,17 @@
 import matplotlib.pyplot as plt
+import pickle
+data = []
+for i in range(10, 51, 10):
+    print(i)
+    with open(f'nohup_random_{i}', 'r') as f:
+        l = f.readlines()
+        l = list(filter(lambda x: x.startswith('0.'), l))
+        l = [float(x) for x in l]
+    data.append(l)
+with open('random_result.pkl', 'wb') as f:
+    pickle.dump(data, f)
 
-
-
+'''
 l1 = [0.6821428571428572, 0.6678571428571428, 0.675, 0.6892857142857143, 0.6892857142857143, 0.7,
      0.6428571428571429, 0.6714285714285714, 0.6571428571428571, 0.6928571428571428,
      0.6571428571428571, 0.6892857142857143, 0.675, 0.7142857142857143, 0.6857142857142857,
@@ -71,7 +81,7 @@ plt.plot(x[:len(yy)],yy,color='red')
 #plt.plot(x[:len(l5)],l5,color='black')
 #plt.plot(x_data,y_data2,color='blue',linewidth=3.0,linestyle='-.')
 plt.show()
-
+'''
 
 
 
