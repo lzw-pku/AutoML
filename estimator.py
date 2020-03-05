@@ -48,10 +48,10 @@ class Estimator:
                                   bidirectional=self.bidirectional, n_layer=self.n_layer,
                                   dropout=self.dropout)
         self.model.set_embedding(torch.tensor(self.dataset.word_vector))
-        #state_dict = torch.load('initial_model')
-        #state_dict['_dec_embedding.weight'] = state_dict['_dec_embedding.weight'][:self.dataset.grammar.num_rules + 1]
+        state_dict = torch.load('initial_model')
+        state_dict['_dec_embedding.weight'] = state_dict['_dec_embedding.weight'][:self.dataset.grammar.num_rules + 1]
         #
-        #self.model.load_state_dict(state_dict)
+        self.model.load_state_dict(state_dict)
         #torch.save(self.model.state_dict(), './initial_model')
         #exit(0)
         #state_dict = torch.load('exp/ckpt289-0.4418167173862457')
@@ -100,20 +100,20 @@ class Estimator:
             else:
                 patience -= 1
                 if patience == 0:
-                    score0 = self.compute_performance(test_batches, id2rule,
-                                                     nonterminal2id, id2nonterminal)
+                    #score0 = self.compute_performance(test_batches, id2rule,
+                    #                                 nonterminal2id, id2nonterminal)
                     score = self.compute_performance_decode(test_batches, id2rule,
                                                             nonterminal2id, id2nonterminal)
-                    print(score0, score)
+                    #print(score0, score)
                     best_exact_match = max(best_exact_match, score)
                     #print('early stop')
                     break
-            if i % 50 == 49:
-                score0 = self.compute_performance(test_batches, id2rule,
-                                                 nonterminal2id, id2nonterminal)
+            if True:
+                #score0 = self.compute_performance(test_batches, id2rule,
+                #                                 nonterminal2id, id2nonterminal)
                 score = self.compute_performance_decode(test_batches, id2rule,
                                                         nonterminal2id, id2nonterminal)
-                print(score0, score)
+                #print(score0, score)
                 best_exact_match = max(best_exact_match, score)
         return best_exact_match
 
@@ -147,8 +147,8 @@ class Estimator:
         true_example = 0
         for batch in batches:
             batch_actions = self.model.batched_beamsearch(batch.questions,
-                                                    batch.src_lens, PAD, 200, 3,
-                                                    nonterminal2id, id2nonterminal)[0]
+                                                    batch.src_lens, PAD, 200, 5,
+                                                    nonterminal2id, id2nonterminal, diverse=0)[0]
             #id2rule也许可以被production替代
             batch_actions = torch.stack(batch_actions).transpose(0, 1)
             total += len(batch_actions)

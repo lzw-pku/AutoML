@@ -28,7 +28,7 @@ def train(args):
 
 def one(args):
     actor = Actor(args)
-    actor.one('random_10/grammar-271')
+    actor.one('random_10/grammar-450')
     '''
     t = Transformer(prolog_grammar.GRAMMAR_DICTIONARY, prolog_grammar.ROOT_RULE)
     t.creat_nt('"_population"')
@@ -92,5 +92,5 @@ if __name__ == '__main__':
     args.bi = not args.no_bi
     args.cuda = torch.cuda.is_available() and not args.no_cuda
 
-    one(args)
-    #train(args)
+    #one(args)
+    train(args)
