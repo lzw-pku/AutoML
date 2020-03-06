@@ -71,8 +71,8 @@ def read_prolog_data():
 
 
 def read_sql_data():
-    test_data = './data/geo/geo_sql_question_based_test.tsv'
-    train_data = './data/geo/geo_sql_question_based_train.tsv'
+    test_data = './data/atis/atis_sql_question_based_test.tsv'
+    train_data = './data/atis/atis_sql_question_based_train.tsv'
     train_questions, train_logical_forms = read_tsv(train_data, normalize_sql)
     test_questions, test_logical_forms = read_tsv(test_data, normalize_sql)
     return (train_questions, test_questions), (train_logical_forms, test_logical_forms)

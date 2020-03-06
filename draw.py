@@ -5,7 +5,67 @@ import re
 
 from utils import read_sql_data
 from grammars.grammar import Grammar
-import grammars.geo.sql_grammar as sql_grammar
+import grammars.atis.sql_grammar as sql_grammar
+
+with open('data/atis/sql_table.pkl', 'rb') as f:
+    table = pickle.load(f)
+    col_name = set()
+    for cols in table.values():
+        for col in cols:
+            col_name.add(col)
+    col_name = list(col_name)
+    col_name = [f'"{x.lower()}"' for x in col_name]
+
+
+
+    col_name = [x.strip('"') for x in col_name]
+    table_name = [x.lower() for x in table.keys()]
+
+print(col_name)
+print(table_name)
+
+(train_question, test_question), (train_logic, test_logic) =read_sql_data()
+
+string = set()
+for logic in train_logic + test_logic:
+    logic = logic.lower()
+    #print(logic)
+    s = re.findall('\'(.*?)\'', logic)
+    string.update(s)
+    s = re.findall('\"(.*?)\"', logic)
+    string.update(s)
+string = list(sorted([f'"{x}"' for x in string]))
+print(string)
+exit(0)
+alias = set()
+for logic in train_logic + test_logic:
+    logic = logic.lower()
+    s = re.findall(' as ([a-z]*?alias[0-9]+) ', logic)
+    alias.update(s)
+print(alias)
+print(len(alias))
+table_ali = []
+col_ali = []
+for ali in alias:
+    assert ali[-2] not in [str(i) for i in range(10)]
+    assert ali[:-1].endswith('alias')
+    tmp = ali[:-6]
+    #print(tmp)
+    assert tmp in table_name or tmp in col_name
+    if tmp in table_name:
+        table_ali.append(ali)
+    if tmp in col_name:
+        col_ali.append(ali)
+
+table_ali = list(sorted(table_ali))
+col_ali = list(sorted(col_ali))
+print(table_ali)
+print(col_ali)
+exit(0)
+
+
+
+
 grammar = Grammar(sql_grammar.GRAMMAR_DICTIONARY, sql_grammar.ROOT_RULE)
 (train_question, test_question), (train_logic, test_logic) =read_sql_data()
 

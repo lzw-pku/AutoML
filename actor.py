@@ -1,7 +1,7 @@
 from estimator import Estimator
 from transform import Transformer
 import grammars.geo.prolog_grammar as prolog_grammar
-import grammars.geo.sql_grammar as sql_grammar
+import grammars.atis.sql_grammar as sql_grammar
 import random
 import pickle
 import os
