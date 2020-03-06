@@ -1,6 +1,7 @@
 from estimator import Estimator
 from transform import Transformer
 import grammars.geo.prolog_grammar as prolog_grammar
+import grammars.geo.sql_grammar as sql_grammar
 import random
 import pickle
 import os
@@ -34,8 +35,8 @@ class Actor:
                                        batch_size=args.batch, epoch_num=args.epoch_num, cuda=args.cuda,
                                        path = args.path)
 
-        self.transformer = Transformer(prolog_grammar.GRAMMAR_DICTIONARY,
-                                       prolog_grammar.ROOT_RULE)
+        self.transformer = Transformer(sql_grammar.GRAMMAR_DICTIONARY,
+                                       sql_grammar.ROOT_RULE)
 
         self.performances = []
         self.actions = []

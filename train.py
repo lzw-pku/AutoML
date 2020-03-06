@@ -12,7 +12,7 @@ def save(o, name):
 def train(args):
     actor = Actor(args)
     actor.perform('initial')
-    i = 0
+    exit(0)#i = 0
     perform = []
     while True:
         actor = Actor(args)
