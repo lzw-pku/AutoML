@@ -1,15 +1,28 @@
 import matplotlib.pyplot as plt
 import pickle
-data = []
-for i in range(10, 51, 10):
-    print(i)
-    with open(f'nohup_random_{i}', 'r') as f:
+import numpy as np
+def read(name):
+    with open(f'result/nohup_{name}') as f:
         l = f.readlines()
         l = list(filter(lambda x: x.startswith('0.'), l))
-        l = [float(x) for x in l]
+        l = np.asarray([float(x) for x in l])
+    return l
+
+data = []
+for i in [30, 50, 100]:
+    l = read(f'new_random_{i}_new')
     data.append(l)
-with open('random_result.pkl', 'wb') as f:
-    pickle.dump(data, f)
+
+for l in data:
+    print(len(l), np.mean(l), np.max(l), np.min(l), np.std(l))
+
+print('\n\n')
+l = read('max_10000')
+print(len(l), np.mean(l), np.max(l), np.min(l), np.std(l))
+l = read('min_10000')
+print(len(l), np.mean(l), np.max(l), np.min(l), np.std(l))
+
+
 
 '''
 l1 = [0.6821428571428572, 0.6678571428571428, 0.675, 0.6892857142857143, 0.6892857142857143, 0.7,

@@ -6,7 +6,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from utils import PAD, sequence_loss
 import torch.nn.functional as F
 from os.path import join
-from grammars.utils import normalize_prolog_variable_names, action_sequence_to_logical_form
+from grammars.utils import normalize_prolog_variable_names, action_sequence_to_logical_form, normalize_sql
+
 import time
 
 
@@ -159,7 +160,7 @@ class Estimator:
                         break
                 try:
                     rule_str = [id2rule[int(act)] for act in actions]
-                    rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
+                    rule = normalize_sql(action_sequence_to_logical_form(rule_str))
                     if rule == logical_form:
                         true_example += 1
                 except:
@@ -185,7 +186,7 @@ class Estimator:
                         break
                 try:
                     rule_str = [id2rule[int(act)] for act in actions]
-                    rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
+                    rule = normalize_sql(action_sequence_to_logical_form(rule_str))
                     if rule == logical_form:
                         true_example += 1
                 except:

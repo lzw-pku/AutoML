@@ -424,6 +424,18 @@ def normalize_prolog_variable_names(logical_form):
 
 
 def normalize_sql(logical_form):
+    s = logical_form.replace("( ", "(").replace(" )", ")").replace(
+        ";", "").replace('"', "'").replace(' . ', '.').strip().lower()
+    s = s.replace('max (', 'max(')
+    s = s.replace('min (', 'min(')
+    s = s.replace('avg (', 'avg(')
+    s = s.replace('count (', 'count(')
+    s = s.replace('sum (', 'sum(')
+    s = s.replace('count(1)', 'count(*)')
+    return s
+
+
+def normalize_sql(logical_form):
     s = logical_form.replace("( ", "(").replace(" )", ")").replace(";", "").replace('"', "'").replace(' . ', '.').strip().lower()
     s = s.replace('max (', 'max(')
     s = s.replace('min (', 'min(')

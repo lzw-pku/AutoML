@@ -1,4 +1,4 @@
-from grammars.utils import normalize_prolog_variable_names
+from grammars.utils import normalize_prolog_variable_names, normalize_sql
 import random
 import torch
 import torch.nn.functional as F
@@ -67,6 +67,14 @@ def read_prolog_data():
     #quesetions, prologs = train_questions + test_questions, train_logical_forms + test_logical_forms
     #for idx, p in enumerate(prologs):
     #    prologs[idx] = normalize_prolog_variable_names(p).lower()
+    return (train_questions, test_questions), (train_logical_forms, test_logical_forms)
+
+
+def read_sql_data():
+    test_data = './data/geo/geo_sql_question_based_test.tsv'
+    train_data = './data/geo/geo_sql_question_based_train.tsv'
+    train_questions, train_logical_forms = read_tsv(train_data, normalize_sql)
+    test_questions, test_logical_forms = read_tsv(test_data, normalize_sql)
     return (train_questions, test_questions), (train_logical_forms, test_logical_forms)
 
 

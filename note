@@ -39,3 +39,6 @@ grammar:
     is_captial_of ????
 
 
+更改grammar：
+    1. data的read data
+    2. estimator decode的时候normalize
