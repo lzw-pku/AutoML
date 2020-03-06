@@ -1,6 +1,59 @@
 import matplotlib.pyplot as plt
 import pickle
 import numpy as np
+import re
+
+from utils import read_sql_data
+from grammars.grammar import Grammar
+import grammars.geo.sql_grammar as sql_grammar
+grammar = Grammar(sql_grammar.GRAMMAR_DICTIONARY, sql_grammar.ROOT_RULE)
+(train_question, test_question), (train_logic, test_logic) =read_sql_data()
+
+
+d = set()
+#print(grammar.get_production_rule_by_id(222))
+for logic in train_logic + test_logic:
+    applied_production_rules = grammar.parse(logic)
+    rule_ids = [rule.rule_id for rule in applied_production_rules]
+    for i in rule_ids:
+        if i >= 120 and i <= 1446:
+            d.add(i)
+print(d)
+print(len(d))
+from grammars.geo.sql_grammar import GRAMMAR_DICTIONARY
+m = GRAMMAR_DICTIONARY['string']
+new_m = set()
+for i in d:
+    s = eval(grammar.get_production_rule_by_id(i).rhs)[0]
+    flag = False
+    for v in m:
+        if re.search(s, v) is not None and v not in new_m:
+            assert not flag
+            flag = True
+            new_m.add(v)
+    assert flag
+
+
+#print(train_logic[0])
+print(new_m)
+assert len(new_m) == len(d)
+print(m)
+print(list(new_m))
+exit(0)
+#print(len(m))
+'''
+for i in range(120, 1447):
+    p = grammar.get_production_rule_by_id(i)
+    print(p.lhs)
+    assert grammar.get_production_rule_by_id(i).lhs == 'string'
+
+for k, v in grammar._rule2id.items():
+    if k.startswith('string'):
+        print(k, v)
+exit(0)
+'''
+
+
 def read(name):
     with open(f'result/nohup_{name}') as f:
         l = f.readlines()

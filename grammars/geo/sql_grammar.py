@@ -120,6 +120,31 @@ GRAMMAR_DICTIONARY['column_alias'] = [
 
 GRAMMAR_DICTIONARY["non_literal_number"] = ['"150000"', '"750"', '"0"', '"1"', '"2"', '"3"', '"4"',]
 GRAMMAR_DICTIONARY["string"] = [
+    '"\'potomac\'"', '"\'washington\'"', '"\'minneapolis\'"', '"\'maryland\'"', '"\'massachusetts\'"',
+    '"\'rhode island\'"', '"\'baton rouge\'"', '"\'rio grande\'"', '"\'boulder\'"', '"\'missouri\'"',
+    '"\'pennsylvania\'"', '"\'boston\'"', '"\'mckinley\'"', '"\'montana\'"', '"\'riverside\'"',
+    '"\'colorado\'"', '"\'san francisco\'"', '"\'virginia\'"', '"\'des moines\'"', '"\'mississippi\'"',
+    '"\'indiana\'"', '"\'kalamazoo\'"', '"\'tucson\'"', '"\'oklahoma\'"', '"\'west virginia\'"',
+    '"\'mount mckinley\'"', '"\'delaware\'"', '"\'minnesota\'"', '"\'red river\'"', '"\'maine\'"',
+    '"\'pittsburgh\'"', '"\'idaho\'"', '"\'california\'"', '"\'north carolina\'"', '"\'nevada\'"',
+    '"\'spokane\'"', '"\'texas\'"', '"\'austin\'"', '"\'hawaii\'"', '"\'north dakota\'"', '"\'arkansas\'"',
+    '"\'whitney\'"', '"\'rochester\'"', '"\'san jose\'"', '"\'vermont\'"', '"\'dover\'"', '"\'kentucky\'"',
+    '"\'tennessee\'"', '"\'alabama\'"', '"\'michigan\'"', '"\'dallas\'"', '"\'new jersey\'"',
+    '"\'indianapolis\'"', '"\'scotts valley\'"', '"\'red\'"', '"\'flint\'"', '"\'south dakota\'"',
+    '"\'oregon\'"', '"\'atlanta\'"', '"\'denver\'"', '"\'new york\'"', '"\'new hampshire\'"',
+    '"\'new orleans\'"', '"\'alaska\'"', '"\'fort wayne\'"', '"\'detroit\'"', '"\'florida\'"',
+    '"\'columbus\'"', '"\'wisconsin\'"', '"\'georgia\'"', '"\'sacramento\'"', '"\'durham\'"',
+    '"\'death valley\'"', '"\'chicago\'"', '"\'north platte\'"', '"\'arizona\'"', '"\'chattahoochee\'"',
+    '"\'kansas\'"', '"\'seattle\'"', '"\'usa\'"', '"\'albany\'"', '"\'san diego\'"', '"\'utah\'"',
+    '"\'montgomery\'"', '"\'salem\'"', '"\'springfield\'"', '"\'erie\'"', '"\'guadalupe peak\'"',
+    '"\'dc\'"', '"\'nebraska\'"', '"\'south carolina\'"', '"\'iowa\'"', '"\'salt lake city\'"',
+    '"\'portland\'"', '"\'tempe\'"', '"\'ohio\'"', '"\'san antonio\'"', '"\'new mexico\'"',
+    '"\'louisiana\'"', '"\'illinois\'"', '"\'miami\'"', '"\'wyoming\'"', '"\'plano\'"', '"\'houston\'"'
+]
+
+
+'''
+    [
     '"\'dc\'"',
     '"104577"', '"\'big stone lake\'"', '"\'borah peak\'"', '"\'1746\'"', '"56153"', '"\'87\'"', '"\'evanston\'"', '"\'brockton\'"', '"95322"', '"\'north charleston\'"', '"1595138"', '"\'725\'"', '"\'huntington\'"', '"158000"', '"\'royal oak\'"', '"101229"', '"\'greenville\'"', 
     '"107969"', '"\'207\'"', '"57906"', '"\'red river\'"', '"\'smoky hill\'"', '"0.6798646362098139"', '"\'newport news\'"', '"77372"', '"190037"', '"130414"', '"\'upper darby\'"', '"\'mcallen\'"', '"\'rhode island\'"', '"\'143\'"', 
@@ -180,3 +205,4 @@ GRAMMAR_DICTIONARY["string"] = [
     '"\'1917\'"', '"\'bethesda\'"', '"\'cheektowaga\'"', '"92742"', '"\'scottsdale\'"', '"\'santa ana\'"', '"\'quincy\'"', '"\'colorado springs\'"', '"\'texas\'"', '"\'elbert\'"', '"66784"', '"\'daly city\'"', '"4700000"', '"88622"', '"\'carson\'"', '"4354"', '"2520000"', '"80188"', '"\'701\'"', '"\'lorain\'"', '"\'mississippi\'"', '"636"', '"\'iliamna\'"', '"\'ontario\'"', '"2966850"', '"\'hubbard\'"', '"2913000"', '"111.67647617239416"',
     '"\'anchorage\'"', '"\'chicago\'"', '"385164"', '"\'churchill\'"', '"17.208480565371026"', '"152453"', '"\'uncompahgre\'"', '"14229000"', '"\'san leandro\'"', '"\'st. clair\'"', '"\'4202\'"', '"1458"', '"64107"', '"\'troy\'"', '"77216"', '"75051"', '"108999"', '"61615"', '"\'west virginia\'"', '"\'billings\'"', '"\'red\'"', '"118794"', '"\'shreveport\'"', '"81548"', '"\'potomac river\'"', '"\'princeton\'"', '"69855"', '"76698"', '"\'torrance\'"',
     '"151968"', '"\'2207\'"', '"403.1548757170172"', '"345496"', '"\'edison\'"', '"77568"', '"\'4205\'"', '"\'4011\'"', '"\'death valley\'"', '"\'mount mckinley\'"', '"5463000"', '"58913"', '"\'whittier\'"', '"1125000"']
+    '''

@@ -33,7 +33,7 @@ def make_vocab(sentences, emb_dim):
             word_vector.append(w2v[w])
         else:
             word_vector.append([random.random() - 0.5 for _ in range(emb_dim)])
-    
+
     return word2id, id2word, word_vector
 
 
