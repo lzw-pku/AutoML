@@ -104,14 +104,16 @@ GRAMMAR_DICTIONARY["table_name"] = ['"aircraft"', '"airline"', '"airport"', '"ai
                                     '"time_zone"']
 
 GRAMMAR_DICTIONARY["table_alias"] = [
-    'aircraftalias0', 'aircraftalias1', 'aircraftalias2', 'aircraftalias3', 'airlinealias0',
-    'airportalias0', 'airportalias1', 'airportalias2', 'airportalias3', 'cityalias0', 'cityalias1',
-    'cityalias2', 'cityalias3', 'cityalias4', 'cityalias5', 'daysalias0', 'daysalias1', 'daysalias2',
-    'daysalias3', 'daysalias4', 'daysalias5', 'daysalias6', 'daysalias7', 'daysalias8', 'daysalias9',
-    'farealias0', 'farealias1', 'farealias2', 'farealias3', 'farealias4', 'flightalias0',
-    'flightalias1', 'flightalias2', 'flightalias3', 'restrictionalias0', 'statealias0', 'statealias1',
-    'statealias2', 'statealias3'
+    '"aircraftalias0"', '"aircraftalias1"', '"aircraftalias2"', '"aircraftalias3"', '"airlinealias0"',
+    '"airportalias0"', '"airportalias1"', '"airportalias2"', '"airportalias3"', '"cityalias0"',
+    '"cityalias1"', '"cityalias2"', '"cityalias3"', '"cityalias4"', '"cityalias5"', '"daysalias0"',
+    '"daysalias1"', '"daysalias2"', '"daysalias3"', '"daysalias4"', '"daysalias5"', '"daysalias6"',
+    '"daysalias7"', '"daysalias8"', '"daysalias9"', '"farealias0"', '"farealias1"', '"farealias2"',
+    '"farealias3"', '"farealias4"', '"flightalias0"', '"flightalias1"', '"flightalias2"',
+    '"flightalias3"', '"restrictionalias0"', '"statealias0"', '"statealias1"', '"statealias2"',
+    '"statealias3"'
 ]
+
 
 GRAMMAR_DICTIONARY["column_name"] = [
     '"*"', '"meal_code"', '"range_miles"', '"departure_flight_number"', '"manufacturer"',

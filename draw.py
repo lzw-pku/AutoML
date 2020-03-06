@@ -36,7 +36,7 @@ for logic in train_logic + test_logic:
     string.update(s)
 string = list(sorted([f'"{x}"' for x in string]))
 print(string)
-exit(0)
+#exit(0)
 alias = set()
 for logic in train_logic + test_logic:
     logic = logic.lower()
@@ -59,6 +59,7 @@ for ali in alias:
 
 table_ali = list(sorted(table_ali))
 col_ali = list(sorted(col_ali))
+table_ali = [f'"{x}"' for x in table_ali]
 print(table_ali)
 print(col_ali)
 exit(0)
