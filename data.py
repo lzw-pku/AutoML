@@ -41,16 +41,16 @@ class GeoDataset:
         id2rule = {}
         self.grammar = Grammar(grammar_dict, root_rule)
         productions = self.grammar.get_productions()
-        print(self.grammar.num_rules)
-        min_act = 999
-        max_act = 0
+        #print(self.grammar.num_rules)
+        #min_act = 999
+        #max_act = 0
         train_size = len(self.train_questions)
         logical_forms = self.train_logical_forms + self.test_logical_forms
         for form in logical_forms:
             applied_production_rules = self.grammar.parse(form)
             for r in applied_production_rules:
-                max_act = max(max_act, r.rule_id)
-                min_act = min(min_act, r.rule_id)
+                #max_act = max(max_act, r.rule_id)
+                #min_act = min(min_act, r.rule_id)
                 id2rule[r.rule_id] = r.rule
             rule_ids = [rule.rule_id for rule in applied_production_rules]
             actions.append(rule_ids)
@@ -58,10 +58,10 @@ class GeoDataset:
         test_actions = actions[train_size:]
         train_batches = self.get_batch(self.train_questions, tran_actions, self.train_logical_forms)
         test_batches = self.get_batch(self.test_questions, test_actions, self.test_logical_forms)
-        print(max_act, min_act)
-        assert min_act == 1 and max_act == self.grammar.num_rules - 1
-        print(tran_actions[0:5])
-        exit(0)
+        #print(max_act, min_act)
+        #assert min_act == 1 and max_act == self.grammar.num_rules - 1
+        #print(tran_actions[0:5])
+        #exit(0)
         return (train_batches, test_batches), id2rule, productions
 
     def pre_process(self, questions, logical_forms):

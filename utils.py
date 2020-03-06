@@ -12,8 +12,8 @@ def make_vocab(sentences, emb_dim):
     word2id['<pad>'] = PAD
     id2word = ['<pad>']
     word_vector = []
-    for _ in id2word:
-        word_vector.append([random.random() - 0.5 for _ in range(emb_dim)])
+    #for _ in id2word:
+    #    word_vector.append([random.random() - 0.5 for _ in range(emb_dim)])
     num = 1
     for s in sentences:
         s = s.split()
@@ -28,12 +28,12 @@ def make_vocab(sentences, emb_dim):
         w2v = [w.split() for w in w2v]
         w2v = {w[0]: [float(x) for x in w[1:]] for w in w2v}
 
-    for w in id2word[num:]:
+    for w in id2word:
         if w in w2v.keys():
             word_vector.append(w2v[w])
         else:
             word_vector.append([random.random() - 0.5 for _ in range(emb_dim)])
-
+    
     return word2id, id2word, word_vector
 
 
