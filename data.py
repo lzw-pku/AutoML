@@ -41,7 +41,7 @@ class GeoDataset:
         id2rule = {}
         self.grammar = Grammar(grammar_dict, root_rule)
         productions = self.grammar.get_productions()
-        #print(self.grammar.num_rules)
+        print(self.grammar.num_rules)
         #min_act = 999
         #max_act = 0
         train_size = len(self.train_questions)

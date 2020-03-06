@@ -76,7 +76,7 @@ class Estimator:
         for i in range(epoch_num):
             self.train(train_batches)
             performance = self.eval(test_batches)
-            print(performance)
+            #print(performance)
             valid_loss.append(performance)
             if not toy:
                 self.scheduler.step(performance)
