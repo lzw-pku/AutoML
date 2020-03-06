@@ -42,3 +42,4 @@ grammar:
 更改grammar：
     1. data的read data
     2. estimator decode的时候normalize
+    3. actor的transformer使用grammar
