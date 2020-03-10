@@ -113,7 +113,7 @@ class Estimator:
                 #                                 nonterminal2id, id2nonterminal)
                 score = self.compute_performance_decode(test_batches, id2rule,
                                                         nonterminal2id, id2nonterminal)
-                #print(score0, score)
+                print(score)
                 best_exact_match = max(best_exact_match, score)
         return best_exact_match
 

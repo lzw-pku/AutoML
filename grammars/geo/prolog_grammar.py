@@ -14,6 +14,34 @@ ROOT_RULE = 'statement -> [answer]'
 
 GRAMMAR_DICTIONARY = {}
 GRAMMAR_DICTIONARY['statement'] = ['(answer ws)']
+GRAMMAR_DICTIONARY['answer'] = ['(one ws answer)', '(one)']
+GRAMMAR_DICTIONARY['one'] = [
+    '"wyoming"', '"wisconsin"', '"westvirginia"', '"washington"', '"wa"', '"virginia"', '"vermont"',
+    '"v6"', '"v4"', '"v3"', '"v2"', '"v1"', '"v0"', '"utah"', '"usa"', '"tx"', '"tucson"', '"texas"',
+    '"tennessee"', '"tempe"', '"springfield"', '"spokane"', '"southdakota"', '"southcarolina"',
+    '"seattle"', '"sd"', '"scottsvalley"', '"sanjose"', '"sanfrancisco"', '"sandiego"', '"sanantonio"',
+    '"salt_lake_city"', '"salem"', '"sacramento"', '"rochester"', '"riverside"', '"riogrande"',
+    '"rhodeisland"', '"red"', '"potomac"', '"portland"', '"plano"', '"pittsburgh"', '"pennsylvania"',
+    '"pa"', '"oregon"', '"oklahoma"', '"ohio"', '"nv"', '"northplatte"', '"northdakota"',
+    '"northcarolina"', '"newyork"', '"neworleans"', '"newmexico"', '"newjersey"', '"newhampshire"',
+    '"nevada"', '"nebraska"', '"mountwhitney"', '"mountmckinley"', '"montgomery"', '"montana"', '"mo"',
+    '"mn"', '"missouri"', '"mississippi"', '"minnesota"', '"minneapolis"', '"michigan"', '"miami"',
+    '"me"', '"massachusetts"', '"maryland"', '"maine"', '"ma"', '"louisiana"', '"kentucky"', '"kansas"',
+    '"kalamazoo"', '"iowa"', '"indianapolis"', '"indiana"', '"illinois"', '"idaho"', '"houston"',
+    '"hawaii"', '"guadalupepeak"', '"georgia"', '"fortwayne"', '"florida"', '"flint"', '"erie"',
+    '"durham"', '"dover"', '"detroit"', '"desmoines"', '"denver"', '"delaware"', '"deathvalley"', '"dc"',
+    '"dallas"', '"columbus"', '"colorado"', '"chicago"', '"chattahoochee"', '"california"', '"boulder"',
+    '"boston"', '"batonrouge"', '"az"', '"austin"', '"atlanta"', '"arkansas"', '"arizona"', '"albany"',
+    '"alaska"', '"alabama"', '"_traverse"', '"_sum"', '"_stateid"', '"_state"', '"_smallest"', '"_size"',
+    '"_shortest"', '"_riverid"', '"_river"', '"_population"', '"_placeid"', '"_place"', '"_next_to"',
+    '"_mountain"', '"_most"', '"_major"', '"_lowest"', '"_lower"', '"_low_point"', '"_longest"',
+    '"_longer"', '"_loc"', '"_len"', '"_largest"', '"_lake"', '"_highest"', '"_higher"', '"_high_point"',
+    '"_fewest"', '"_elevation"', '"_density"', '"_countryid"', '"_count"', '"_const"', '"_cityid"',
+    '"_city"', '"_capital"', '"_area"', '"_answer"', '"_"', '"\\\\+_const"', '"\\\\+"', '"0.0"', '","',
+    '")"', '"("'
+]
+
+'''
 GRAMMAR_DICTIONARY['answer'] = ['("_answer" ws "(" ws var ws "," ws goal ws ")" )']
 # Goal
 GRAMMAR_DICTIONARY['conjunction'] = [
@@ -123,4 +151,5 @@ GRAMMAR_DICTIONARY['state_abbre'] = ['"_"', '"dc"', '"sd"', '"az"', '"mo"', '"wa
 GRAMMAR_DICTIONARY['state_name'] = ['"newhampshire"', '"utah"', '"delaware"', '"tennessee"', '"newmexico"', '"oregon"', '"arizona"', '"iowa"', '"southdakota"', '"georgia"', '"arkansas"', '"pennsylvania"', '"oklahoma"', '"illinois"', '"kentucky"', '"wisconsin"', '"newjersey"', '"hawaii"', '"minnesota"', '"nebraska"', '"maryland"', '"massachusetts"', '"mississippi"', '"nevada"', '"southcarolina"', '"kansas"', '"idaho"', '"michigan"', '"alabama"', '"louisiana"', '"virginia"', '"washington"', '"california"', '"alaska"', '"texas"', '"colorado"', '"missouri"', '"vermont"', '"montana"', '"florida"', '"wyoming"', '"ohio"', '"westvirginia"', '"indiana"', '"northcarolina"', '"rhodeisland"', '"maine"', '"newyork"', '"northdakota"']
 GRAMMAR_DICTIONARY['river_name'] = ['"ohio"', '"riogrande"', '"delaware"', '"northplatte"', '"chattahoochee"', '"mississippi"', '"colorado"', '"missouri"', '"red"', '"potomac"']
 GRAMMAR_DICTIONARY['place_name'] = ['"deathvalley"', '"mountwhitney"', '"mountmckinley"', '"guadalupepeak"']
+'''
 GRAMMAR_DICTIONARY["ws"] = ['~"\s*"i']

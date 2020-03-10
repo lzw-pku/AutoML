@@ -1,5 +1,33 @@
 import matplotlib.pyplot as plt
 import pickle
+import re
+from utils import read_prolog_data
+(train_q, test_q), (train_l, test_l) = read_prolog_data()
+ROOT_RULE = 'statement -> [answer]'
+
+GRAMMAR_DICTIONARY = {}
+GRAMMAR_DICTIONARY['statement'] = ['(answer ws)']
+terminal = set()
+for l in train_l + test_l:
+    l = l.replace("'", "").lower().replace(" ", "").replace("(", " ( ").replace(")", " ) ").replace(",", " , ")
+    l = l.split()
+    terminal.update(l)
+
+
+for t1 in terminal:
+    for t2 in terminal:
+        try:
+            if t1 != '(' and t1 != ')' and t1 != t2 and re.match(t1, t2) is not None:
+                print(t1, t2)
+        except:
+            print('!!!', t1, t2)
+            exit(0)
+terminal = [repr(x).replace('\'', '"') for x in terminal]
+terminal = list(reversed(list(sorted(terminal))))
+print(terminal)
+print(len(terminal))
+exit(0)
+'''
 data = []
 for i in range(10, 51, 10):
     print(i)
@@ -10,7 +38,7 @@ for i in range(10, 51, 10):
     data.append(l)
 with open('random_result.pkl', 'wb') as f:
     pickle.dump(data, f)
-
+'''
 '''
 l1 = [0.6821428571428572, 0.6678571428571428, 0.675, 0.6892857142857143, 0.6892857142857143, 0.7,
      0.6428571428571429, 0.6714285714285714, 0.6571428571428571, 0.6928571428571428,
