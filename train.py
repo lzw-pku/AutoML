@@ -43,6 +43,9 @@ def one(args):
     for form in logical_forms:
         g1.parse(form)
     '''
+
+
+'''
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='training of the AutoML'
@@ -94,3 +97,5 @@ if __name__ == '__main__':
 
     #one(args)
     train(args)
+'''
+train(1)

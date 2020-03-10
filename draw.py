@@ -7,6 +7,79 @@ from utils import read_sql_data
 from grammars.grammar import Grammar
 import grammars.atis.sql_grammar as sql_grammar
 
+
+
+
+s = [    "'0'", "'12'", "'1200'", "'1630'", "'1759'", "'1800'", "'1991'", "'2000'", "'201'", "'21'", "'2200'",
+         "'2400'", "'416'", "'430'", "'539'", "'600'", "'630'", "'746'", "'800'", "'838'", "'98'",
+         "'arrival_time0'", "'arrival_time1'", "'arrival_time2'", "'connections0'", "'day_number0'",
+         "'day_number1'", "'departure_time0'", "'departure_time1'", "'departure_time2'", "'departure_time3'",
+         "'flight_number0'", "'flight_number1'", "'month_number0'", "'one_direction_cost0'",
+         "'round_trip_cost0'", "'stops0'", "'time_elapsed0'", "'year0'", "'year1'"]
+s = [x.replace('\'', '"') for x in s]
+print(s)
+exit(0)
+
+(train_question, test_question), (train_logic, test_logic) =read_sql_data()
+for i in range(2930, 2936):
+    print(i, train_question[i])
+string = set()
+for i, logic in enumerate(train_logic + test_logic):
+    #if i == 2932:
+    #    print(logic)
+    #    print([x[0] for x in re.findall('= ([^\.]*?)( |\)|$)', logic)])
+    #    exit(0)
+    string.update([x[0] for x in re.findall('= ([^\.]*?)( |\)|$)', logic)])
+#assert '\'airport_code0\'' in string
+#for s in string:
+#    print(s)
+#x = 'AS AIRPORTalias0 WHERE AIRPORTalias0.AIRPORT_CODE = "YYZ" ;'
+#print(re.findall('= ([^\.]*?)( |\))', x))
+#exit(0)
+#print(string)
+#exit(0)
+string.remove('select')
+string.remove('(select')
+print(len(string))
+#for s in string:
+#    print(s)
+string = [repr(x) for x in string]
+string2 = sql_grammar.GRAMMAR_DICTIONARY['string']
+print(len(string), len(string2))
+for s in string2:
+    if s not in string:
+        print(s)
+    #assert s in string
+#print(string)
+string = list(sorted(list(set(string + string2))))
+print(len(string))
+print(string)
+exit(0)
+
+'''
+
+m = sql_grammar.GRAMMAR_DICTIONARY
+string = m['string']
+table = m['table_name']
+tabel_alias = m['table_alias']
+col = m['column_name']
+#col_alias = m['column_alias']
+
+#terminal = string #+ table + tabel_alias + col #+ col_alias
+terminal = col
+terminal = [x.strip('"').strip('\'') for x in terminal][1:]
+print(terminal)
+print(len(terminal))
+for t1 in terminal:
+    for t2 in terminal:
+        if t1 != t2 and re.match(t1, t2):
+            print(t1, t2)
+            break
+exit(0)
+
+
+
+
 with open('data/atis/sql_table.pkl', 'rb') as f:
     table = pickle.load(f)
     col_name = set()
@@ -40,7 +113,7 @@ print(string)
 alias = set()
 for logic in train_logic + test_logic:
     logic = logic.lower()
-    s = re.findall(' as ([a-z]*?alias[0-9]+) ', logic)
+    s = re.findall(' as ([^ ]*?alias[0-9]+) ', logic)
     alias.update(s)
 print(alias)
 print(len(alias))
@@ -63,7 +136,7 @@ table_ali = [f'"{x}"' for x in table_ali]
 print(table_ali)
 print(col_ali)
 exit(0)
-
+'''
 
 
 

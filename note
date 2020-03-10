@@ -43,3 +43,10 @@ grammar:
     1. data的read data
     2. estimator decode的时候normalize
     3. actor的transformer使用grammar
+
+
+SQL grammar:
+    1. 前缀会出问题
+    2. 出现了where从句中有括号的情况 eg: where (xx == yy and xx == zz) or xxx
+    3. 出现了value（string）不被‘’包裹的情况
+    4. 出现了新production： is not null        not condition      xx between xx and xx    not between

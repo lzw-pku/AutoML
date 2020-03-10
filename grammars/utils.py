@@ -443,4 +443,22 @@ def normalize_sql(logical_form):
     s = s.replace('count (', 'count(')
     s = s.replace('sum (', 'sum(')
     s = s.replace('count(1)', 'count(*)')
+
+
+    s = s.replace(' flight ', ' flight_base ')
+    s = s.replace(' airport ', ' airport_base ')
+    s = s.replace(' fare ', ' fare_base ')
+    s = s.replace('aircraft_code ', 'aircraft_code_base ')
+    s = s.replace('aircraft_code)', 'aircraft_code_base)')
+
+
+    def replace(matched):
+        #print(matched)
+        #print(matched.group())
+        #print(dir(matched))
+        #exit(0)
+        matched = matched.group()
+        return matched.replace('(', '').replace(')', '')
+
+    #s = re.sub('where \(.*?\)', replace, s)
     return s

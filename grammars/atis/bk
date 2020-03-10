@@ -1,0 +1,196 @@
+# coding=utf8
+
+
+ROOTRULE = 'statement -> [mquery]'
+
+GRAMMARDICTIONARY = {}
+GRAMMARDICTIONARY["statement"] = ['(mquery ws)']
+GRAMMARDICTIONARY["mquery"] = [
+    '(ws selectclause ws fromclause ws whereclause ws groupbyclause ws havingclause ws orderbyclause ws limit)',
+    '(ws selectclause ws fromclause ws whereclause ws groupbyclause ws havingclause ws orderbyclause)',
+    '(ws selectclause ws fromclause ws whereclause ws groupbyclause ws havingclause)',
+    '(ws selectclause ws fromclause ws whereclause ws groupbyclause ws orderbyclause ws limit)',
+    '(ws selectclause ws fromclause ws whereclause ws groupbyclause ws orderbyclause)',
+    '(ws selectclause ws fromclause ws whereclause ws groupbyclause)',
+    '(ws selectclause ws fromclause ws whereclause ws orderbyclause ws limit)',
+    '(ws selectclause ws fromclause ws whereclause ws orderbyclause)',
+    '(ws selectclause ws fromclause ws whereclause)',
+    '(ws selectclause ws fromclause ws groupbyclause ws havingclause ws orderbyclause ws limit)',
+    '(ws selectclause ws fromclause ws groupbyclause ws havingclause ws orderbyclause)',
+    '(ws selectclause ws fromclause ws groupbyclause ws havingclause)',
+    '(ws selectclause ws fromclause ws groupbyclause ws orderbyclause ws limit)',
+    '(ws selectclause ws fromclause ws groupbyclause ws orderbyclause)',
+    '(ws selectclause ws fromclause ws groupbyclause)',
+    '(ws selectclause ws fromclause ws orderbyclause ws limit)',
+    '(ws selectclause ws fromclause ws orderbyclause)',
+    '(ws selectclause ws fromclause)'
+]
+
+# SELECT
+GRAMMARDICTIONARY["selectclause"] = ['(selectwithdistinct ws selectresults)']
+GRAMMARDICTIONARY["selectwithdistinct"] = ['(ws "select" ws "distinct")', '(ws "select")']
+GRAMMARDICTIONARY["selectresults"] = ['(ws selectresult ws "," ws selectresults)', '(ws selectresult)']
+GRAMMARDICTIONARY["selectresult"] = [
+    '(subject ws selectop ws subject)',
+    #'(subject wsp "as" wsp columnalias)',
+    'subject',
+]
+
+# FROM
+GRAMMARDICTIONARY["fromclause"] = ['(ws "from" ws tablesource ws joinclauses)',
+                                     '(ws "from" ws source)']
+GRAMMARDICTIONARY["joinclauses"] = ['(joinclause ws joinclauses)', 'joinclause']
+GRAMMARDICTIONARY["joinclause"] = ['joinop ws tablesource ws "on" ws joinconditionclause']
+GRAMMARDICTIONARY["joinop"] = ['"join"', '"left outer join"']
+GRAMMARDICTIONARY["joinconditionclause"] = ['(joincondition ws "and" ws joinconditionclause)', 'joincondition']
+GRAMMARDICTIONARY["joincondition"] = ['ws colref ws "=" ws colref']
+GRAMMARDICTIONARY["source"] = ['(ws singlesource ws "," ws source)', '(ws singlesource)']
+GRAMMARDICTIONARY["singlesource"] = ['tablesource', 'sourcesubq']
+GRAMMARDICTIONARY["sourcesubq"] = ['("(" ws mquery ws ")" wsp "as" wsp tablealias)', '("(" ws mquery ws ")" wsp tablealias)', '("(" ws mquery ws ")")']
+GRAMMARDICTIONARY["tablesource"] = ['(tablename ws "as" ws tablealias)', 'tablename']
+
+# LIMIT
+GRAMMARDICTIONARY["limit"] = ['("limit" ws nonliteralnumber)']
+
+# ORDER
+GRAMMARDICTIONARY["orderbyclause"] = ['ws "order" ws "by" ws orderclause']
+GRAMMARDICTIONARY["orderclause"] = ['(orderingterm ws "," ws orderclause)', 'orderingterm']
+GRAMMARDICTIONARY["orderingterm"] = ['(ws subject ws ordering)', '(ws subject)']
+GRAMMARDICTIONARY["ordering"] = ['(ws "asc")', '(ws "desc")']
+
+# WHERE
+GRAMMARDICTIONARY["whereclause"] = ['(ws "where" wsp expr ws whereconj)', '(ws "where" wsp expr)']
+GRAMMARDICTIONARY["whereconj"] = ['(ws "and" wsp expr ws whereconj)', '(ws "and" wsp expr)', 
+                                    '(ws "or" wsp expr ws whereconj)', '(ws "or" wsp expr)']
+
+# GROUP BY
+GRAMMARDICTIONARY["groupbyclause"] = ['(ws "group" ws "by" ws groupclause)']
+GRAMMARDICTIONARY["groupclause"] = ['(ws subject ws "," ws groupclause)', '(ws subject)']
+
+# HAVING
+GRAMMARDICTIONARY["havingclause"] = ['(ws "having" wsp expr ws havingconj)', '(ws "having" wsp expr)']
+GRAMMARDICTIONARY["havingconj"] = ['(ws "and" wsp expr ws havingconj)', '(ws "and" wsp expr)', 
+                                     '(ws "or" wsp expr ws havingconj)', '(ws "or" wsp expr)']
+
+GRAMMARDICTIONARY["expr"] = [
+    '(subject wsp "not" wsp "in" wsp "(" ws mquery ws ")")',
+    '(subject wsp "in" ws "(" ws mquery ws ")")',
+    '(subject ws binaryop ws "all" ws "(" ws mquery ws ")")',
+    '(subject ws binaryop ws "any" ws "(" ws mquery ws ")")',
+    '(subject ws binaryop ws "(" ws mquery ws ")")',
+    '(subject ws binaryop ws value)',
+]
+GRAMMARDICTIONARY["value"] = ['nonliteralnumber', 'colref', 'string']
+GRAMMARDICTIONARY["subject"] = ['function', 'colref']
+GRAMMARDICTIONARY["colref"] = ['(tablealias ws "." ws columnname)', 'columnname']
+
+GRAMMARDICTIONARY["function"] = ['(fname ws "(" ws "distinct" ws colref ws ")")',
+                                  '(fname ws "(" ws colref ws ")")']
+GRAMMARDICTIONARY["fname"] = ['"count"', '"sum"', '"max"', '"min"', '"avg"', '"all"']
+
+# TODO(MARK): This is not tight enough. AND/OR are strictly boolean value operators.
+GRAMMARDICTIONARY["binaryop"] = ['"="', '"!="', '"<>"', '">="', '"<="', '">"', '"<"', '"like"', '"not like"']
+GRAMMARDICTIONARY['selectop'] = ['"/"', '"+"', '"-"']
+
+GRAMMARDICTIONARY["ws"] = ['~"\s*"i']
+GRAMMARDICTIONARY['wsp'] = ['~"\s+"i']
+GRAMMARDICTIONARY["tablename"] = ['"aircraft"', '"airline"', '"airport"', '"airportservice"',
+                                    '"city"', '"classofservice"', '"codedescription"',
+                                    '"compartmentclass"', '"dateday"', '"days"',
+                                    '"dualcarrier"', '"equipmentsequence"', '"fare"',
+                                    '"farebasis"', '"flight"', '"flightfare"', '"flightleg"',
+                                    '"flightstop"', '"foodservice"', '"groundservice"',
+                                    '"month"', '"restriction"', '"state"', '"timeinterval"',
+                                    '"timezone"']
+
+GRAMMARDICTIONARY["tablealias"] = [
+    '"aircraftalias0"', '"aircraftalias1"', '"aircraftalias2"', '"aircraftalias3"', '"airlinealias0"',
+    '"airportservicealias0"', '"airportservicealias1"', '"airportservicealias2"',
+    '"airportservicealias3"', '"airportservicealias4"', '"airportservicealias5"',
+    '"airportalias0"', '"airportalias1"', '"airportalias2"', '"airportalias3"', '"cityalias0"',
+    '"cityalias1"', '"cityalias2"', '"cityalias3"', '"cityalias4"', '"cityalias5"',
+    '"classofservicealias0"', '"datedayalias0"', '"datedayalias1"', '"datedayalias2"',
+    '"datedayalias3"', '"datedayalias4"', '"daysalias0"', '"daysalias1"', '"daysalias2"',
+    '"daysalias3"', '"daysalias4"', '"daysalias5"', '"daysalias6"', '"daysalias7"', '"daysalias8"',
+    '"daysalias9"', '"equipmentsequencealias0"', '"equipmentsequencealias1"',
+    '"equipmentsequencealias2"', '"farebasisalias0"', '"farebasisalias1"', '"farebasisalias2"',
+    '"farebasisalias3"', '"farebasisalias4"', '"farebasisalias5"', '"farealias0"', '"farealias1"',
+    '"farealias2"', '"farealias3"', '"farealias4"', '"flightfarealias0"', '"flightfarealias1"',
+    '"flightfarealias2"', '"flightfarealias3"', '"flightfarealias4"', '"flightlegalias0"',
+    '"flightlegalias1"', '"flightstopalias0"', '"flightstopalias1"', '"flightalias0"',
+    '"flightalias1"', '"flightalias2"', '"flightalias3"', '"foodservicealias0"',
+    '"foodservicealias1"', '"groundservicealias0"', '"restrictionalias0"', '"statealias0"',
+    '"statealias1"', '"statealias2"', '"statealias3"'
+]
+
+
+
+GRAMMARDICTIONARY["columnname"] = [
+    '"*"', '"mealcode"', '"rangemiles"', '"departureflightnumber"', '"manufacturer"',
+    '"aircraftdescription"', '"stoptime"', '"stopairport"', '"fareairline"', '"nodiscounts"',
+    '"engines"', '"monthname"', '"restrictioncode"', '"propulsion"', '"pressurized"',
+    '"fromairport"', '"widebody"', '"flightdays"', '"timezonename"', '"capacity"', '"fareid"',
+    '"classtype"', '"period"', '"minimumconnecttime"', '"stops"', '"servicename"', '"citycode"',
+    '"begintime"', '"mealdescription"', '"endtime"', '"minutesdistant"', '"roundtriprequired"',
+    '"onedirectioncost"', '"daynumber"', '"flightid"', '"timezonecode"', '"wingspan"',
+    '"length"', '"stopnumber"', '"payload"', '"airportcode"', '"milesdistant"',
+    '"hoursfromgmt"', '"departureairline"', '"toairport"', '"rank"', '"cityname"',
+    '"dualairline"', '"saturdaystayrequired"', '"economy"', '"weight"', '"premium"',
+    '"bookingclass"', '"dayname"', '"airportlocation"', '"groundfare"', '"dayscode"',
+    '"note"', '"transporttype"', '"basictype"', '"compartment"', '"legflight"',
+    '"arrivalairline"', '"maximumstay"', '"monthnumber"', '"minimumstay"', '"statename"',
+    '"flightnumber"', '"year"', '"airlineflight"', '"countryname"', '"arrivalflightnumber"',
+    '"dualcarrier"', '"mealnumber"', '"classdescription"', '"departuretime"', '"airlinename"',
+    '"airlinecode"', '"application"', '"farebasiscode"', '"stopovers"', '"highflightnumber"',
+    '"airportname"', '"lowflightnumber"', '"discounted"', '"season"', '"advancepurchase"',
+    '"arrivaltime"', '"basisdays"', '"legnumber"', '"mainairline"', '"aircraftcodesequence"',
+    '"stopdays"', '"timeelapsed"', '"aircraftcode"', '"connections"', '"statecode"', '"night"',
+    '"cruisingspeed"', '"direction"', '"roundtripcost"', '"description"', '"code"'
+]
+'''
+GRAMMARDICTIONARY['columnalias'] = [
+    '"derivedfieldalias0"', '"derivedfieldalias1"'  # custom
+]
+'''
+GRAMMARDICTIONARY["nonliteralnumber"] = ['"\'100\'"', '"\'734\'"', '"\'757\'"', '"\'733\'"']
+GRAMMARDICTIONARY["string"] = [
+    '"\'72s\'"', '"\'73s\'"', '"\'aa\'"', '"\'ac\'"', '"\'air taxi operation\'"', '"\'aircraftcode0\'"',
+    '"\'airlinecode0\'"', '"\'airlinecode1\'"', '"\'airlinecode2\'"', '"\'airlinename0\'"',
+    '"\'airportcode0\'"', '"\'airportcode1\'"', '"\'airportname0\'"', '"\'ap\'"', '"\'ap/55\'"',
+    '"\'ap/57\'"', '"\'ap/58\'"', '"\'ap/68\'"', '"\'ap/80\'"', '"\'arizona\'"', '"\'as\'"',
+    '"\'atlanta\'"', '"\'b\'"', '"\'baltimore\'"', '"\'basictype0\'"', '"\'bh\'"', '"\'bna\'"',
+    '"\'boeing\'"', '"\'bookingclass0\'"', '"\'bos\'"', '"\'boston\'"', '"\'breakfast\'"',
+    '"\'bur\'"', '"\'burbank\'"', '"\'business\'"', '"\'bwi\'"', '"\'c\'"', '"\'california\'"',
+    '"\'canadian airlines international\'"', '"\'canadian airlines\'"', '"\'charlotte\'"',
+    '"\'chicago\'"', '"\'cincinnati\'"', '"\'cityname0\'"', '"\'cityname1\'"', '"\'cityname2\'"',
+    '"\'cityname3\'"', '"\'classtype0\'"', '"\'classtype1\'"', '"\'cleveland\'"', '"\'co\'"',
+    '"\'coach\'"', '"\'colorado\'"', '"\'columbus\'"', '"\'continental airlines\'"',
+    '"\'countryname0\'"', '"\'cp\'"', '"\'cvg\'"', '"\'d/s\'"', '"\'d10\'"', '"\'d9s\'"',
+    '"\'daily\'"', '"\'dal\'"', '"\'dallas fort worth\'"', '"\'dallas\'"', '"\'dayname0\'"',
+    '"\'dayname1\'"', '"\'dayname2\'"', '"\'dayname3\'"', '"\'dayname4\'"', '"\'dc\'"',
+    '"\'delta\'"', '"\'denver\'"', '"\'detroit\'"', '"\'dfw\'"', '"\'discounted0\'"', '"\'dl\'"',
+    '"\'dtw\'"', '"\'ea\'"', '"\'economy0\'"', '"\'ewr\'"', '"\'f\'"', '"\'f28\'"',
+    '"\'farebasiscode0\'"', '"\'ff\'"', '"\'first\'"', '"\'florida\'"', '"\'fn\'"',
+    '"\'fort worth\'"', '"\'general mitchell international\'"', '"\'georgia\'"', '"\'h\'"',
+    '"\'hou\'"', '"\'houston\'"', '"\'hp\'"', '"\'iad\'"', '"\'iah\'"', '"\'indianapolis\'"',
+    '"\'jfk\'"', '"\'kansas city\'"', '"\'kw\'"', '"\'las vegas\'"', '"\'lax\'"',
+    '"\'lester pearson\'"', '"\'lga\'"', '"\'lh\'"', '"\'limousine\'"', '"\'long beach\'"',
+    '"\'los angeles\'"', '"\'ls\'"', '"\'m\'"', '"\'m80\'"', '"\'manufacturer0\'"', '"\'mco\'"',
+    '"\'mealcode0\'"', '"\'mealcode1\'"', '"\'mealdescription0\'"', '"\'memphis\'"', '"\'mia\'"',
+    '"\'miami\'"', '"\'milwaukee\'"', '"\'minneapolis\'"', '"\'minnesota\'"', '"\'mke\'"', '"\'ml\'"',
+    '"\'montreal\'"', '"\'nashville\'"', '"\'new jersey\'"', '"\'new york\'"', '"\'newark\'"',
+    '"\'no\'"', '"\'north carolina\'"', '"\'nw\'"', '"\'nx\'"', '"\'oak\'"', '"\'oakland\'"',
+    '"\'ohio\'"', '"\'ontario\'"', '"\'ord\'"', '"\'orlando\'"', '"\'philadelphia\'"', '"\'phl\'"',
+    '"\'phoenix\'"', '"\'pit\'"', '"\'pittsburgh\'"', '"\'propulsion0\'"', '"\'q\'"', '"\'qo\'"',
+    '"\'quebec\'"', '"\'qw\'"', '"\'qx\'"', '"\'rapid transit\'"', '"\'rental car\'"',
+    '"\'roundtriprequired0\'"', '"\'s\'"', '"\'s/\'"', '"\'sa\'"', '"\'salt lake city\'"',
+    '"\'san diego\'"', '"\'san francisco\'"', '"\'san jose\'"', '"\'sd/d\'"', '"\'seattle\'"',
+    '"\'sfo\'"', '"\'snack\'"', '"\'st. louis\'"', '"\'st. paul\'"', '"\'st. petersburg\'"',
+    '"\'statecode0\'"', '"\'statename0\'"', '"\'statename1\'"', '"\'sunday\'"', '"\'tacoma\'"',
+    '"\'tampa\'"', '"\'taxi\'"', '"\'tennessee\'"', '"\'thrift\'"', '"\'thursday\'"', '"\'toronto\'"',
+    '"\'tpa\'"', '"\'transporttype0\'"', '"\'transporttype1\'"', '"\'turboprop\'"', '"\'tw\'"',
+    '"\'tx\'"', '"\'ua\'"', '"\'us\'"', '"\'usair\'"', '"\'utah\'"', '"\'washington\'"',
+    '"\'westchester county\'"', '"\'wn\'"', '"\'y\'"', '"\'yes\'"', '"\'yn\'"', '"\'yx\'"',
+    '"\'yyz\'"'
+]
+

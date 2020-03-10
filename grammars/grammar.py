@@ -71,8 +71,9 @@ class Grammar:
         try:
             applied_production_rules = sql_visitor.parse(q) if query else []
         except ParseError as e:
-            print(e)
-            applied_production_rules = list()
+            #print(e)
+            raise e
+            #applied_production_rules = list()
         rules = list()
         for rule in applied_production_rules:
             lhs, rhs = rule.split(' -> ')

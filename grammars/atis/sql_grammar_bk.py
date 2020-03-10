@@ -59,37 +59,10 @@ GRAMMAR_DICTIONARY["ordering_term"] = ['(ws subject ws ordering)', '(ws subject)
 GRAMMAR_DICTIONARY["ordering"] = ['(ws "asc")', '(ws "desc")']
 
 # WHERE
-
-'''
 GRAMMAR_DICTIONARY["where_clause"] = ['(ws "where" wsp expr ws where_conj)', '(ws "where" wsp expr)']
-GRAMMAR_DICTIONARY["where_conj"] = ['(ws "and" wsp expr ws where_conj)', '(ws "and" wsp expr)',
+GRAMMAR_DICTIONARY["where_conj"] = ['(ws "and" wsp expr ws where_conj)', '(ws "and" wsp expr)', 
                                     '(ws "or" wsp expr ws where_conj)', '(ws "or" wsp expr)']
-'''
-'''
-GRAMMAR_DICTIONARY["where_clause"] = ['(ws "where" wsp condition ws where_conj)', '(ws "where" wsp condition)']
 
-GRAMMAR_DICTIONARY["condition"] = ['(expr)',
-                                   '("(" ws condition ws ")")',
-                                   '("(" ws condition ws where_conj ws ")")',]
-
-GRAMMAR_DICTIONARY["where_conj"] = ['(ws "and" wsp condition ws where_conj)', '(ws "and" wsp condition)',
-                                    '(ws "or" wsp condition ws where_conj)', '(ws "or" wsp condition)']
-'''
-GRAMMAR_DICTIONARY["where_clause"] = ['(ws "where" wsp condition)']
-GRAMMAR_DICTIONARY["condition"] = ['(ws single ws "and" wsp condition)',
-                                   '(ws single ws "or" wsp condition)',
-                                   '(single)']
-GRAMMAR_DICTIONARY["single"] = ['(expr)',
-                                '("(" ws condition ws ")")',
-                                '("not" ws single)']
-'''
-GRAMMAR_DICTIONARY["condition"] = ['(expr)',
-                                   '("(" ws condition ws ")")',
-                                   '("(" ws condition ws where_conj ws ")")',]
-
-GRAMMAR_DICTIONARY["where_conj"] = ['(ws "and" wsp condition ws where_conj)', '(ws "and" wsp condition)',
-                                    '(ws "or" wsp condition ws where_conj)', '(ws "or" wsp condition)']
-'''
 # GROUP BY
 GRAMMAR_DICTIONARY["groupby_clause"] = ['(ws "group" ws "by" ws group_clause)']
 GRAMMAR_DICTIONARY["group_clause"] = ['(ws subject ws "," ws group_clause)', '(ws subject)']
@@ -100,9 +73,6 @@ GRAMMAR_DICTIONARY["having_conj"] = ['(ws "and" wsp expr ws having_conj)', '(ws 
                                      '(ws "or" wsp expr ws having_conj)', '(ws "or" wsp expr)']
 
 GRAMMAR_DICTIONARY["expr"] = [
-    '(subject wsp "between" wsp value wsp "and" wsp value)',
-    '(subject wsp "not" wsp "between" wsp value wsp "and" wsp value)',
-    '(subject wsp "is" wsp "not" wsp "null")',
     '(subject wsp "not" wsp "in" wsp "(" ws mquery ws ")")',
     '(subject wsp "in" ws "(" ws mquery ws ")")',
     '(subject ws binaryop ws "all" ws "(" ws mquery ws ")")',
@@ -110,7 +80,7 @@ GRAMMAR_DICTIONARY["expr"] = [
     '(subject ws binaryop ws "(" ws mquery ws ")")',
     '(subject ws binaryop ws value)',
 ]
-GRAMMAR_DICTIONARY["value"] = ['non_literal_number', 'string', 'col_ref']
+GRAMMAR_DICTIONARY["value"] = ['non_literal_number', 'col_ref', 'string']
 GRAMMAR_DICTIONARY["subject"] = ['function', 'col_ref']
 GRAMMAR_DICTIONARY["col_ref"] = ['(table_alias ws "." ws column_name)', 'column_name']
 
@@ -124,11 +94,11 @@ GRAMMAR_DICTIONARY['selectop'] = ['"/"', '"+"', '"-"']
 
 GRAMMAR_DICTIONARY["ws"] = ['~"\s*"i']
 GRAMMAR_DICTIONARY['wsp'] = ['~"\s+"i']
-GRAMMAR_DICTIONARY["table_name"] = ['"aircraft"', '"airline"', '"airport_base"', '"airport_service"',
+GRAMMAR_DICTIONARY["table_name"] = ['"aircraft"', '"airline"', '"airport"', '"airport_service"',
                                     '"city"', '"class_of_service"', '"code_description"',
                                     '"compartment_class"', '"date_day"', '"days"',
-                                    '"dual_carrier"', '"equipment_sequence"', '"fare_base"',
-                                    '"fare_basis"', '"flight_base"', '"flight_fare"', '"flight_leg"',
+                                    '"dual_carrier"', '"equipment_sequence"', '"fare"',
+                                    '"fare_basis"', '"flight"', '"flight_fare"', '"flight_leg"',
                                     '"flight_stop"', '"food_service"', '"ground_service"',
                                     '"month"', '"restriction"', '"state"', '"time_interval"',
                                     '"time_zone"']
@@ -174,7 +144,7 @@ GRAMMAR_DICTIONARY["column_name"] = [
     '"airline_code"', '"application"', '"fare_basis_code"', '"stopovers"', '"high_flight_number"',
     '"airport_name"', '"low_flight_number"', '"discounted"', '"season"', '"advance_purchase"',
     '"arrival_time"', '"basis_days"', '"leg_number"', '"main_airline"', '"aircraft_code_sequence"',
-    '"stop_days"', '"time_elapsed"', '"aircraft_code_base"', '"connections"', '"state_code"', '"night"',
+    '"stop_days"', '"time_elapsed"', '"aircraft_code"', '"connections"', '"state_code"', '"night"',
     '"cruising_speed"', '"direction"', '"round_trip_cost"', '"description"', '"code"'
 ]
 '''
@@ -182,63 +152,8 @@ GRAMMAR_DICTIONARY['column_alias'] = [
     '"derived_fieldalias0"', '"derived_fieldalias1"'  # custom
 ]
 '''
-GRAMMAR_DICTIONARY["non_literal_number"] = [
-    '"0"', '"1000"', '"100"', '"1045"', '"1200"', '"12"', '"1400"', '"1500"', '"150"', '"1630"', '"1759"',
-    '"1800"', '"1900"', '"1991"', '"2000"', '"200"', '"201"', '"2100"', '"21"', '"2200"', '"2400"',
-    '"300"', '"400"', '"416"', '"430"', '"500"', '"539"', '"600"', '"630"', '"746"', '"800"', '"838"',
-    '"900"', '"98"',
-]
+GRAMMAR_DICTIONARY["non_literal_number"] = ['"\'100\'"', '"\'734\'"', '"\'757\'"', '"\'733\'"']
 GRAMMAR_DICTIONARY["string"] = [
-    '"\'100\'"', '"\'72s\'"', '"\'733\'"', '"\'734\'"', '"\'73s\'"', '"\'757\'"', '"\'aa\'"', '"\'ac\'"',
-    '"\'air taxi operation\'"', '"\'aircraft_code0\'"', '"\'airline_code0\'"',
-    '"\'airline_code1\'"', '"\'airline_code2\'"', '"\'airline_name0\'"', '"\'airport_code0\'"',
-    '"\'airport_code1\'"', '"\'airport_name0\'"', '"\'ap\'"', '"\'ap/55\'"', '"\'ap/57\'"', '"\'ap/58\'"',
-    '"\'ap/68\'"', '"\'ap/80\'"', '"\'arizona\'"', '"\'as\'"', '"\'atlanta\'"', '"\'b\'"',
-    '"\'baltimore\'"', '"\'basic_type0\'"', '"\'bh\'"', '"\'bna\'"', '"\'boeing\'"',
-    '"\'booking_class0\'"', '"\'bos\'"', '"\'boston\'"', '"\'breakfast\'"', '"\'bur\'"', '"\'burbank\'"',
-    '"\'business\'"', '"\'bwi\'"', '"\'c\'"', '"\'california\'"', '"\'canadian airlines international\'"',
-    '"\'canadian airlines\'"', '"\'charlotte\'"', '"\'chicago\'"', '"\'cincinnati\'"', '"\'city_name0\'"',
-    '"\'city_name1\'"', '"\'city_name2\'"', '"\'city_name3\'"', '"\'class_type0\'"', '"\'class_type1\'"',
-    '"\'cleveland\'"', '"\'co\'"', '"\'coach\'"', '"\'colorado\'"', '"\'columbus\'"',
-    '"\'continental airlines\'"', '"\'country_name0\'"', '"\'cp\'"', '"\'cvg\'"', '"\'d/s\'"', '"\'d10\'"',
-    '"\'d9s\'"', '"\'daily\'"', '"\'dal\'"', '"\'dallas fort worth\'"', '"\'dallas\'"',
-    '"\'day_name0\'"', '"\'day_name1\'"', '"\'day_name2\'"', '"\'day_name3\'"', '"\'day_name4\'"',
-    '"\'dc\'"', '"\'delta\'"', '"\'denver\'"', '"\'detroit\'"', '"\'dfw\'"', '"\'discounted0\'"',
-    '"\'dl\'"', '"\'dtw\'"', '"\'ea\'"', '"\'economy0\'"', '"\'ewr\'"', '"\'f\'"', '"\'f28\'"',
-    '"\'fare_basis_code0\'"', '"\'ff\'"', '"\'first\'"', '"\'florida\'"', '"\'fn\'"', '"\'fort worth\'"',
-    '"\'general mitchell international\'"', '"\'georgia\'"', '"\'h\'"', '"\'hou\'"',
-    '"\'houston\'"', '"\'hp\'"', '"\'iad\'"', '"\'iah\'"', '"\'indianapolis\'"', '"\'jfk\'"',
-    '"\'kansas city\'"', '"\'kw\'"', '"\'las vegas\'"', '"\'lax\'"',
-    '"\'lester pearson\'"', '"\'lga\'"', '"\'lh\'"', '"\'limousine\'"', '"\'long beach\'"',
-    '"\'los angeles\'"', '"\'ls\'"', '"\'m\'"', '"\'m80\'"', '"\'manufacturer0\'"',
-    '"\'mco\'"', '"\'meal_code0\'"', '"\'meal_code1\'"', '"\'meal_description0\'"', '"\'memphis\'"',
-    '"\'mia\'"', '"\'miami\'"', '"\'milwaukee\'"', '"\'minneapolis\'"', '"\'minnesota\'"', '"\'mke\'"',
-    '"\'ml\'"', '"\'montreal\'"', '"\'nashville\'"', '"\'new jersey\'"', '"\'new york\'"',
-    '"\'newark\'"', '"\'no\'"', '"\'north carolina\'"', '"\'nw\'"', '"\'nx\'"', '"\'oak\'"',
-    '"\'oakland\'"', '"\'ohio\'"', '"\'ontario\'"', '"\'ord\'"', '"\'orlando\'"', '"\'philadelphia\'"',
-    '"\'phl\'"', '"\'phoenix\'"', '"\'pit\'"', '"\'pittsburgh\'"', '"\'propulsion0\'"', '"\'q\'"',
-    '"\'qo\'"', '"\'quebec\'"', '"\'qw\'"', '"\'qx\'"', '"\'rapid transit\'"',
-    '"\'rental car\'"', '"\'round_trip_required0\'"', '"\'s\'"', '"\'s/\'"', '"\'sa\'"',
-    '"\'salt lake city\'"', '"\'san diego\'"', '"\'san francisco\'"', '"\'san jose\'"',
-    '"\'sd/d\'"', '"\'seattle\'"', '"\'sfo\'"', '"\'snack\'"', '"\'st. louis\'"',
-    '"\'st. paul\'"', '"\'st. petersburg\'"', '"\'state_code0\'"', '"\'state_name0\'"',
-    '"\'state_name1\'"', '"\'sunday\'"', '"\'tacoma\'"', '"\'tampa\'"', '"\'taxi\'"', '"\'tennessee\'"',
-    '"\'thrift\'"', '"\'thursday\'"', '"\'toronto\'"', '"\'tpa\'"', '"\'transport_type0\'"',
-    '"\'transport_type1\'"', '"\'turboprop\'"', '"\'tw\'"', '"\'tx\'"', '"\'ua\'"', '"\'us\'"',
-    '"\'usair\'"', '"\'utah\'"', '"\'washington\'"', '"\'westchester county\'"',
-    '"\'wn\'"', '"\'y\'"', '"\'yes\'"', '"\'yn\'"', '"\'yx\'"', '"\'yyz\'"',
-    '"arrival_time0"', '"arrival_time1"', '"arrival_time2"',
-    '"connections0"', '"day_number0"', '"day_number1"', '"departure_time0"', '"departure_time1"',
-    '"departure_time2"', '"departure_time3"', '"flight_number0"', '"flight_number1"', '"month_number0"',
-    '"one_direction_cost0"', '"round_trip_cost0"', '"stops0"', '"time_elapsed0"', '"year0"', '"year1"'
-]
-
-
-
-
-
-'''    
-    [
     '"\'72s\'"', '"\'73s\'"', '"\'aa\'"', '"\'ac\'"', '"\'air taxi operation\'"', '"\'aircraft_code0\'"',
     '"\'airline_code0\'"', '"\'airline_code1\'"', '"\'airline_code2\'"', '"\'airline_name0\'"',
     '"\'airport_code0\'"', '"\'airport_code1\'"', '"\'airport_name0\'"', '"\'ap\'"', '"\'ap/55\'"',
@@ -278,4 +193,4 @@ GRAMMAR_DICTIONARY["string"] = [
     '"\'westchester county\'"', '"\'wn\'"', '"\'y\'"', '"\'yes\'"', '"\'yn\'"', '"\'yx\'"',
     '"\'yyz\'"'
 ]
-'''
+
