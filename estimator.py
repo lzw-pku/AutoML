@@ -75,7 +75,19 @@ class Estimator:
         valid_loss = []
         for i in range(epoch_num):
             self.train(train_batches)
+
             performance = self.eval(test_batches)
+            if True:
+                #score0 = self.compute_performance(test_batches, id2rule,
+                #                                 nonterminal2id, id2nonterminal)
+                score = self.compute_performance_decode(test_batches, id2rule,
+                                                        nonterminal2id, id2nonterminal)
+                print(performance, score)
+                best_exact_match = max(best_exact_match, score)
+
+
+            performance = -score
+
             #print(performance)
             valid_loss.append(performance)
             if not toy:
@@ -109,13 +121,6 @@ class Estimator:
                     best_exact_match = max(best_exact_match, score)
                     print('early stop')
                     break
-            if True:
-                #score0 = self.compute_performance(test_batches, id2rule,
-                #                                 nonterminal2id, id2nonterminal)
-                score = self.compute_performance_decode(test_batches, id2rule,
-                                                        nonterminal2id, id2nonterminal)
-                print(performance, score)
-                best_exact_match = max(best_exact_match, score)
         return best_exact_match
 
     def train(self, batches):
