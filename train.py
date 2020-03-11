@@ -45,7 +45,7 @@ def one(args):
     '''
 
 
-'''
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='training of the AutoML'
@@ -97,5 +97,5 @@ if __name__ == '__main__':
 
     #one(args)
     train(args)
-'''
-train(1)
+
+#train(1)
