@@ -11,7 +11,12 @@ def save(o, name):
         pickle.dump(o, f)
 def train(args):
     actor = Actor(args)
-    actor.perform('initial')
+    actor.one()
+    exit(0)
+    while True:
+        actor = Actor(args)
+        actor.perform('initial')
+    exit(0)
     i = 0
     perform = []
     while True:
