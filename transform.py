@@ -198,6 +198,7 @@ class Transformer:
         creat_nt.remove('"("')
         creat_nt.remove('")"')
         creat_nt.remove('""')
+        creat_nt.remove('"\+"')
         #t2 = time.time()
         merge_nt = []
         non_terminals = copy.deepcopy(self.non_terminals)
