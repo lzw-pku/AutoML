@@ -32,6 +32,7 @@ class Estimator:
 
         self.dataset = GeoDataset(emb_dim, batch_size, cuda)
         self.vocab_size = len(self.dataset.word_vector)
+        self.error_history = []
 
     def estimate(self, grammar_dict, root_rule, toy=False, name=''):
         time1 = time.time()
@@ -106,6 +107,9 @@ class Estimator:
                                                             nonterminal2id, id2nonterminal)
                     #print(score0, score)
                     best_exact_match = max(best_exact_match, score)
+                    with open('./error_history.pkl', 'wb') as f:
+                        import pickle
+                        pickle.dump(self.error_history, f)
                     #print('early stop')
                     break
             if True:
@@ -171,6 +175,10 @@ class Estimator:
         self.model.eval()
         total = 0
         true_example = 0
+        error1 = [0 for _ in range(len(id2rule) + 1)]
+        error2 = [0 for _ in range(len(id2rule) + 1)]
+        total_act1 = [0 for _ in range(len(id2rule) + 1)]
+        total_act2 = [0 for _ in range(len(id2rule) + 1)]
         for batch in batches:
             batch_actions = self.model.batch_decode(batch.questions,
                                                     batch.src_lens, PAD, 200,
@@ -178,18 +186,31 @@ class Estimator:
             #id2rule也许可以被production替代
             batch_actions = torch.stack(batch_actions).transpose(0, 1)
             total += len(batch_actions)
-            for actions, logical_form in zip(batch_actions, batch.logical_forms):
+            for actions, logical_form, act_out in zip(batch_actions, batch.logical_forms, batch.actions_out):
                 for i in range(len(actions)):
                     if int(actions[i]) == 0:
                         actions = actions[:i]
                         break
+
+                rule_str = [id2rule[int(act)] for act in actions]
                 try:
-                    rule_str = [id2rule[int(act)] for act in actions]
                     rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
-                    if rule == logical_form:
-                        true_example += 1
                 except:
                     continue
+                for act in actions:
+                    total_act1[int(act)] += 1
+                for act in act_out:
+                    total_act2[int(act)] += 1
+                if rule == logical_form:
+                    true_example += 1
+                else:
+                    for i in range(min(len(actions), len(act_out))):
+                        if int(actions[i]) != act_out[i]:
+                            error1[int(actions[i])] += 1
+                            error2[act_out[i]] += 1
+                            break
+        print(error1)
+        self.error_history.append((error1, error2, total_act1, total_act2))
         return true_example / total
         #print('exact match: ', true_example / total)
 
