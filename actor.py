@@ -100,7 +100,7 @@ class Actor:
     def one(self):
         #with open(path, 'rb') as f:
         #    self.transformer = pickle.load(f)
-        for i in range(30):
+        for i in range(50):
             self.step()
         grammar_dict, root_rule = self.transformer.get_grammar_dict()
         for i in range(10000):

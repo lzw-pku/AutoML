@@ -10,13 +10,13 @@ def save(o, name):
     with open(name, 'wb') as f:
         pickle.dump(o, f)
 def train(args):
-    actor = Actor(args)
-    actor.one()
-    exit(0)
+    #actor = Actor(args)
+    #actor.one()
+    #exit(0)
     while True:
         actor = Actor(args)
         actor.perform('initial')
-    exit(0)
+        exit(0)
     i = 0
     perform = []
     while True:
