@@ -1,7 +1,82 @@
+
+def 红焖竹鼠(p0, td, m, L, Q0, M0, mode):
+    if mode == 1:
+        YSIF = 1 / 2 * ((L * p0 - Q0) * td ** 2 * p0) / (Q0 * m)
+    elif mode == 2:
+        YSIF = 3 * (p0 * L ** 2 - 2 * M0) * td ** 2 * p0 / (8 * M0 * m)
+
+    return YSIF
+
+
+print(红焖竹鼠(1, 2, 3, 4, 5))
+
+
+
+
+
+
+
+
+
+
+exit(0)
 import matplotlib.pyplot as plt
 import pickle
 import re
 from utils import read_prolog_data
+import numpy as np
+from data import GeoDataset
+from grammars.geo.prolog_grammar import GRAMMAR_DICTIONARY, ROOT_RULE
+emb_dim = 200
+batch_size = 32
+cuda = False
+dataset = GeoDataset(emb_dim, batch_size, cuda)
+_, id2rule, _ = dataset.parse(GRAMMAR_DICTIONARY, ROOT_RULE)
+print(id2rule)
+with open('error_history.pkl', 'rb') as f:
+    data = pickle.load(f)
+error1 = [d[0] for d in data]
+error2 = [d[1] for d in data]
+total1 = [d[2] for d in data]
+total2 = [d[3] for d in data]
+accum = np.zeros([len(error1[0])])
+for error1, error2, total in zip(error1[-10:], error2[-10:], total1[-10:]):
+    error1 = np.asarray(error1)
+    error2 = np.asarray(error2)
+    error = error1 + error2
+    total = np.asarray(total)
+    index = total == 0
+    total[index] = 1
+    prob = error #/ total
+
+
+
+    index = np.logical_and(prob != 0, accum == 0)
+    accum[index] = prob[index]
+    index = np.logical_not(index)
+    accum[index] = accum[index] * 0.98 + prob[index] * 0.02
+    #accum[prob == 0 or accum != 0] =
+    #accum = accum * 0.98 + prob * 0.02 if accum > 0 else prob
+    #prob[index] = 1
+    #prob[prob==np.nan] = 1
+    #print(prob)
+    #exit(0)
+    #print(len(error), len(total))
+tmp = list(sorted(accum, reverse=True))
+print(tmp)
+for i in range(len(accum)):
+    if accum[i] in tmp[:10]:
+        print(total1[-1][i], total2[-1][i], accum[i], id2rule[i])
+print('*' * 80)
+for i in range(len(accum)):
+    if accum[i] in tmp[10:20]:
+        print(total1[-1][i], total2[-1][i], accum[i], id2rule[i])
+print('*' * 80)
+for i in range(len(accum)):
+    if accum[i] in tmp[20:30]:
+        print(total1[-1][i], total2[-1][i], accum[i], id2rule[i])
+#print(accum)
+exit(0)
 '''
 (train_q, test_q), (train_l, test_l) = read_prolog_data()
 ROOT_RULE = 'statement -> [answer]'
