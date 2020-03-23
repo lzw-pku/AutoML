@@ -14,21 +14,21 @@ def exp(args):
                           decay=args.decay, lr_p=args.lr_p, clip=args.clip,
                           batch_size=args.batch, epoch_num=args.epoch_num, cuda=args.cuda,
                           path = args.path)
-
+    vocab_size = estimator.vocab_size
     (train_batches, test_batches), id2rule, productions = estimator.dataset.parse(grammar_dict,
                                                                                   root_rule)
 
     nonterminal2id, id2nonterminal = estimator.build_decode_dict(productions)
 
-    model = Seq2seqModel(vocab_size=args.vocab_size, emb_dim=args.emb_dim,
+    model = Seq2seqModel(vocab_size=vocab_size, emb_dim=args.emb_dim,
                          n_hidden=args.n_hidden,
                          output_size = estimator.dataset.grammar.num_rules + 1,
-                         bidirectional=args.bidirectional, n_layer=args.n_layer,
+                         bidirectional=args.bi, n_layer=args.n_layer,
                          dropout=args.dropout)
-    m = torch.load('')
+    m = torch.load('dirty/model')
 
-    model.load_state_dict(m)
-
+    model.load_state_dict(m['net'])
+    model.cuda()
 
 
     model.eval()

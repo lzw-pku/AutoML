@@ -175,10 +175,11 @@ class Estimator:
         self.model.eval()
         total = 0
         true_example = 0
-        error1 = [0 for _ in range(len(id2rule) + 1)]
-        error2 = [0 for _ in range(len(id2rule) + 1)]
-        total_act1 = [0 for _ in range(len(id2rule) + 1)]
-        total_act2 = [0 for _ in range(len(id2rule) + 1)]
+        error1 = [0 for _ in range(len(id2rule) + 10)]
+        error2 = [0 for _ in range(len(id2rule) + 10)]
+        total_act1 = [0 for _ in range(len(id2rule) + 10)]
+        total_act2 = [0 for _ in range(len(id2rule) + 10)]
+        #print(len(id2rule)+1)
         for batch in batches:
             batch_actions = self.model.batch_decode(batch.questions,
                                                     batch.src_lens, PAD, 200,
@@ -198,8 +199,10 @@ class Estimator:
                 except:
                     continue
                 for act in actions:
+                    #print(act)
                     total_act1[int(act)] += 1
                 for act in act_out:
+                    #print(act)
                     total_act2[int(act)] += 1
                 if rule == logical_form:
                     true_example += 1

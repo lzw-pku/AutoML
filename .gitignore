@@ -6,3 +6,5 @@ tmp.pkl
 *.pyc
 exp
 __pycache__
+dirty
+*pkl
