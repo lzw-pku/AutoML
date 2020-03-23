@@ -140,7 +140,7 @@ class Seq2seqModel(nn.Module):
 
     def batched_beamsearch(self, input_seqs, input_lens,
                            go, max_len, beam_size, nonterminal2id,
-                           id2nonterminal, diverse=1.0):
+                           id2nonterminal, diverse=0.0, relax=False):
         batch_size = len(input_lens)
         attention, init_dec_states = self.encode(input_seqs, input_lens)
         mask = len_mask(input_lens, attention.device).unsqueeze(-2)
@@ -194,7 +194,10 @@ class Seq2seqModel(nn.Module):
                 batch_i += 1
                 if len(finished) >= beam_size:
                     all_beams[i] = []
-                    outputs[i] =  finished[0].sequence[1:]
+                    if relax:
+                        outputs[i] = [f.sequence[1:] for f in finished[:beam_size]]
+                    else:
+                        outputs[i] = finished[0].sequence[1:]
                     # exclude finished inputs
                     attention, mask = all_attention
                     masks = [mask[j] for j, o in enumerate(outputs)
@@ -221,13 +224,16 @@ class Seq2seqModel(nn.Module):
             for i, (o, f, b) in enumerate(zip(outputs,
                                               finished_beams, all_beams)):
                 if o is None:
-                    #outputs[i] = (f+b)[:beam_size]
-                    outputs[i] = (f + b)[0].sequence[1:]
-        outputs = pad_batch_tensorize(outputs,
-                                      PAD, str(all_attention[0].device) != 'cpu').transpose(0, 1)
-        #print(outputs.size())
-        outputs = [o for o in outputs]
-        #print(type(outputs))
+                    if relax:
+                        outputs[i] = [single_f.sequence[1:] for single_f in (f + b)[:beam_size]]
+                    else:
+                        outputs[i] = (f+b)[:beam_size]
+        if relax:
+            pass
+        else:
+            outputs = pad_batch_tensorize(outputs, PAD,
+                                          str(all_attention[0].device) != 'cpu').transpose(0, 1)
+            outputs = [o for o in outputs]
         return outputs, None
 
     def set_embedding(self, embedding):

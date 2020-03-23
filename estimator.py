@@ -34,7 +34,7 @@ class Estimator:
         self.vocab_size = len(self.dataset.word_vector)
         self.error_history = []
 
-    def estimate(self, grammar_dict, root_rule, toy=False, name=''):
+    def estimate(self, grammar_dict, root_rule, toy=False, name='', debug=False):
         time1 = time.time()
         (train_batches, test_batches), id2rule, productions = self.dataset.parse(grammar_dict,
                                                                                  root_rule)
@@ -104,20 +104,21 @@ class Estimator:
                     #score0 = self.compute_performance(test_batches, id2rule,
                     #                                 nonterminal2id, id2nonterminal)
                     score = self.compute_performance_decode(test_batches, id2rule,
-                                                            nonterminal2id, id2nonterminal)
+                                                            nonterminal2id, id2nonterminal, debug)
                     #print(score0, score)
                     best_exact_match = max(best_exact_match, score)
-                    with open('./error_history.pkl', 'wb') as f:
-                        import pickle
-                        pickle.dump(self.error_history, f)
+                    if debug:
+                        with open('./error_history.pkl', 'wb') as f:
+                            import pickle
+                            pickle.dump(self.error_history, f)
                     #print('early stop')
                     break
             if True:
-                #score0 = self.compute_performance(test_batches, id2rule,
-                #                                 nonterminal2id, id2nonterminal)
+                score0 = self.compute_performance(test_batches, id2rule,
+                                                 nonterminal2id, id2nonterminal, relax=True)
                 score = self.compute_performance_decode(test_batches, id2rule,
-                                                        nonterminal2id, id2nonterminal)
-                print(performance, score)
+                                                        nonterminal2id, id2nonterminal, debug)
+                print(performance, score0, score)
                 best_exact_match = max(best_exact_match, score)
         return best_exact_match
 
@@ -145,40 +146,56 @@ class Estimator:
         #print(f'loss in validation dataset: {loss / len(batches)}')
         return loss.item() / len(batches)
 
-    def compute_performance(self, batches, id2rule, nonterminal2id, id2nonterminal):
+    def compute_performance(self, batches, id2rule, nonterminal2id, id2nonterminal, relax=False):
         self.model.eval()
         total = 0
         true_example = 0
         for batch in batches:
             batch_actions = self.model.batched_beamsearch(batch.questions,
                                                     batch.src_lens, PAD, 200, 5,
-                                                    nonterminal2id, id2nonterminal, diverse=0)[0]
-            #id2rule也许可以被production替代
-            batch_actions = torch.stack(batch_actions).transpose(0, 1)
+                                                    nonterminal2id, id2nonterminal, diverse=0,
+                                                          relax=relax)[0]
             total += len(batch_actions)
-            for actions, logical_form in zip(batch_actions, batch.logical_forms):
-                for i in range(len(actions)):
-                    if int(actions[i]) == 0:
-                        actions = actions[:i]
-                        break
-                try:
-                    rule_str = [id2rule[int(act)] for act in actions]
-                    rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
-                    if rule == logical_form:
-                        true_example += 1
-                except:
-                    continue
+            #id2rule也许可以被production替代
+            if not relax:
+                batch_actions = torch.stack(batch_actions).transpose(0, 1)
+
+                for actions, logical_form in zip(batch_actions, batch.logical_forms):
+                    for i in range(len(actions)):
+                        if int(actions[i]) == 0:
+                            actions = actions[:i]
+                            break
+                    try:
+                        rule_str = [id2rule[int(act)] for act in actions]
+                        rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
+                        if rule == logical_form:
+                            true_example += 1
+                    except:
+                        continue
+            else:
+                for action_lists, logical_form in zip(batch_actions, batch.logical_forms):
+                    for actions in action_lists:
+                        try:
+                            rule_str = [id2rule[int(act)] for act in actions]
+                            rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
+                            if rule == logical_form:
+                                true_example += 1
+                                break
+                        except:
+                            continue
+
         return true_example / total
         #print('exact match: ', true_example / total)
 
-    def compute_performance_decode(self, batches, id2rule, nonterminal2id, id2nonterminal):
+    def compute_performance_decode(self, batches, id2rule, nonterminal2id, id2nonterminal, debug):
         self.model.eval()
         total = 0
         true_example = 0
-        error1 = [0 for _ in range(len(id2rule) + 10)]
-        error2 = [0 for _ in range(len(id2rule) + 10)]
-        total_act1 = [0 for _ in range(len(id2rule) + 10)]
-        total_act2 = [0 for _ in range(len(id2rule) + 10)]
+        if debug:
+            error1 = [0 for _ in range(len(id2rule) + 10)]
+            error2 = [0 for _ in range(len(id2rule) + 10)]
+            total_act1 = [0 for _ in range(len(id2rule) + 10)]
+            total_act2 = [0 for _ in range(len(id2rule) + 10)]
         #print(len(id2rule)+1)
         for batch in batches:
             batch_actions = self.model.batch_decode(batch.questions,
@@ -198,22 +215,23 @@ class Estimator:
                     rule = normalize_prolog_variable_names(action_sequence_to_logical_form(rule_str))
                 except:
                     continue
-                for act in actions:
-                    #print(act)
-                    total_act1[int(act)] += 1
-                for act in act_out:
-                    #print(act)
-                    total_act2[int(act)] += 1
+                if debug:
+                    for act in actions:
+                        #print(act)
+                        total_act1[int(act)] += 1
+                    for act in act_out:
+                        #print(act)
+                        total_act2[int(act)] += 1
                 if rule == logical_form:
                     true_example += 1
-                else:
+                elif debug:
                     for i in range(min(len(actions), len(act_out))):
                         if int(actions[i]) != act_out[i]:
                             error1[int(actions[i])] += 1
                             error2[act_out[i]] += 1
                             break
-        print(error1)
-        self.error_history.append((error1, error2, total_act1, total_act2))
+        if debug:
+            self.error_history.append((error1, error2, total_act1, total_act2))
         return true_example / total
         #print('exact match: ', true_example / total)
 
