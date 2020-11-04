@@ -3,9 +3,10 @@ import argparse
 from grammars.geo import prolog_grammar
 from transform import Transformer
 import pickle
-
 from actor import Actor
 from utils import read_prolog_data
+
+
 def save(o, name):
     with open(name, 'wb') as f:
         pickle.dump(o, f)
